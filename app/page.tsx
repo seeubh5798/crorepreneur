@@ -8,12 +8,14 @@ import { Hero } from "@/components/sections/Hero";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { Process } from "@/components/sections/Process";
 import { ProjectShowcase } from "@/components/sections/ProjectShowcase";
+import { Intro } from "@/components/intro/Intro";
 import { Stage3D } from "@/components/three/Stage3D";
 import { EnquiryDialog } from "@/components/ui/EnquiryDialog";
 
 export default function Home() {
   return (
     <>
+      <Intro />
       <Stage3D />
       <Navbar />
       <main id="main" className="relative z-10 overflow-x-clip">

@@ -1112,6 +1112,197 @@ textarea.field-input {
   cursor: progress;
 }
 
+/* ---------- Opening sequence (Intro) ----------
+ * The world, India, Jharkhand, Ranchi; then the page opens out of Ranchi, all
+ * moving as the visitor scrolls. Shown only while <html data-intro> is
+ * "playing" or "revealing" (set by a script in <head>, see lib/intro.ts). It
+ * sits under the film grain, so it keeps the page's matte texture. */
+
+.intro {
+  display: none;
+}
+
+html[data-intro="playing"],
+html[data-intro="revealing"] {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Its scrolling is read by script, so touch gestures must not pan the page. */
+html[data-intro="playing"] .intro,
+html[data-intro="revealing"] .intro {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: block;
+  background: var(--bg);
+  touch-action: none;
+}
+
+/* The cover's own entrance waits for the page to open. */
+html[data-intro="playing"] :is(.masthead-rise, .cover-figure, .load-fade, .load-in, .cover-spot) {
+  animation-play-state: paused;
+}
+
+.intro-stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-soft);
+}
+
+.intro[data-ready] .intro-stage {
+  opacity: 1;
+}
+
+.intro-hud {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 1.4rem;
+  padding-bottom: clamp(1.5rem, 5svh, 3rem);
+  pointer-events: none;
+}
+
+.intro-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  transition: opacity 0.3s var(--ease-soft);
+}
+
+/* As the page opens, the caption steps aside so it never sits over the page. */
+html[data-intro="revealing"] .intro-bottom {
+  opacity: 0;
+}
+
+/* "Scroll to explore", under the globe until the visitor starts. */
+.intro-hint {
+  position: absolute;
+  inset-inline: 0;
+  bottom: clamp(1.5rem, 5svh, 3rem);
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  transition: opacity 0.5s var(--ease-soft);
+  animation: fade-up 0.9s var(--ease-out-expo) 0.8s backwards;
+}
+
+/* A hairline with a bead of light running down it. */
+.intro-hint::after {
+  content: "";
+  width: 1px;
+  height: 2.75rem;
+  background:
+    linear-gradient(transparent, var(--fg) 50%, transparent) 0 0 / 100% 45% no-repeat,
+    var(--line-strong);
+  animation: intro-hint 2s var(--ease-soft) infinite;
+}
+
+@keyframes intro-hint {
+  from {
+    background-position: 0 -90%, 0 0;
+  }
+  to {
+    background-position: 0 190%, 0 0;
+  }
+}
+
+.intro[data-moved] .intro-hint {
+  opacity: 0;
+}
+
+/* On phones the caption fills the bottom, so the hint sits above it. */
+@media (max-width: 47.99rem) {
+  .intro-hint {
+    bottom: max(10.5rem, 24svh);
+  }
+}
+
+.intro-caption {
+  animation: fade-up 0.8s var(--ease-out-expo) both;
+}
+
+.intro-count {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: var(--fg-3);
+}
+
+.intro-place {
+  margin-top: 0.6rem;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  line-height: 0.9;
+  color: var(--fg);
+}
+
+.intro-detail {
+  margin-top: 0.8rem;
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+}
+
+.intro-skip {
+  flex-shrink: 0;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  font-size: 0.875rem;
+  color: var(--fg-2);
+  pointer-events: auto;
+  transition: color 0.3s var(--ease-soft);
+}
+
+.intro-skip:hover,
+.intro-skip:focus-visible {
+  color: var(--fg);
+}
+
+/* The label on Ranchi's pin, placed by the 3D scene. */
+.intro-pin {
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--fg);
+  animation: fade-up 0.6s var(--ease-out-expo) both;
+}
+
+/* The page opens out of Ranchi, at the centre of the screen, as far as the
+ * visitor has scrolled: the 3D sets --intro-open on every frame it changes. */
+@property --intro-open {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+html[data-intro="revealing"] .intro {
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent var(--intro-open),
+    #000 calc(var(--intro-open) * 1.25 + 0.5%)
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent var(--intro-open),
+    #000 calc(var(--intro-open) * 1.25 + 0.5%)
+  );
+}
+
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {

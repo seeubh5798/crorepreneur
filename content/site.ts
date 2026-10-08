@@ -59,6 +59,18 @@ export const founder = {
   },
 };
 
+/** The opening sequence: the camera flies from the world to Ranchi, then the page opens. */
+export const intro = {
+  places: [
+    { name: "The world", detail: "Creators in every feed" },
+    { name: "India", detail: "Home market" },
+    { name: "Jharkhand", detail: "Eastern India" },
+    { name: "Ranchi", detail: "Chabi Gupta's home city · 23.34° N, 85.31° E" },
+  ],
+  hint: "Scroll to explore",
+  skip: "Skip intro",
+} as const;
+
 export const hero = {
   /** Three short lines, set like magazine cover lines. */
   headline: ["Creators.", "Culture.", "Crores."],
