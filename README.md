@@ -105,9 +105,9 @@ file holds all copy on the site.
 a studio-style edit of her photo, made with an AI model run locally: the
 styling (hair behind one shoulder), a tailored black blazer over an ivory
 top, studio light and an editorial grade. Her face is the original
-photograph. The unedited cutout is kept at
-`public/images/founder-original.webp`, so either can be used. To use a
-different photo:
+photograph. The unedited cutout is kept at `design/founder-original.webp`,
+outside `public/` so it is not published; copy it over
+`public/images/founder.webp` to use it instead. To use a different photo:
 
 - Export it as a transparent WebP or PNG cut out from the background, head
   and shoulders.
@@ -128,14 +128,15 @@ components/
                       Process, Founder, FinalCTA
   motion/             ScrollStory: GSAP, ScrollTrigger and Lenis
   three/              Stage3D loader, shared helpers, CroreFigure
-    story/            Phone, Swarm, Studio, screen drawing, anchors
+    story/            Phone, Orrery, Studio, screen drawing, anchors
     crore/            The closing 3D figure
   ui/                 Button, EnquiryDialog, TypeLines, ThemeToggle,
                       Wordmark, PhoneSlot, Reveal, Magnetic, CountUp,
                       CopyEmail, Cursor, icons
 content/site.ts       All copy and placeholder content
 lib/                  Story state, enquiry delivery, theme, helpers
-public/images/        founder.webp (studio edit), founder-original.webp
+public/images/        founder.webp (the portrait on the site)
+design/               founder-original.webp (unedited cutout, not published)
 ```
 
 ## Design system

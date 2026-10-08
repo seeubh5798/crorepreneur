@@ -43,8 +43,8 @@ export const founder = {
      * Replace this one file to swap the portrait: /public/images/founder.webp
      * It is a transparent cutout (WebP with alpha), about 830 x 1250. It is a
      * studio-style AI edit of her photo (styling, tailoring, light); her face is
-     * the original photograph. The unedited cutout is kept at
-     * /public/images/founder-original.webp.
+     * the original photograph. The unedited cutout is kept, unpublished, at
+     * /design/founder-original.webp.
      */
     src: "/images/founder.webp",
     alt: "Chabi Gupta, founder of Crorepreneur, smiling, in a tailored black blazer",
