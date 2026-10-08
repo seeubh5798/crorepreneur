@@ -1,0 +1,1160 @@
+@import "tailwindcss";
+
+/*
+ * Crorepreneur design tokens.
+ * Layout: a left-aligned 12-column editorial grid, 1320px at its widest.
+ * Type: Instrument Serif for display, Geist for everything else.
+ * Colour: matte, warm-neutral grounds with a dusty violet used sparingly, as
+ * light rather than paint. No gloss: flat fills, soft shadows, fine grain.
+ *
+ * Theme logic: the bare :root block is the light palette. With no stored
+ * choice the page follows the system setting through prefers-color-scheme.
+ * A stored choice sets data-theme on <html> and wins in both directions.
+ */
+
+:root {
+  color-scheme: light;
+
+  --bg: #f2f1ed;
+  --bg-elevated: #f8f7f4;
+  --surface: #e9e7e1;
+  --fg: #151517;
+  --fg-2: #57565a;
+  --fg-3: #87867f;
+  --line: rgba(21, 21, 23, 0.09);
+  --line-strong: rgba(21, 21, 23, 0.17);
+
+  --accent: #5d52c2;
+  --accent-2: #7b71d2;
+  --accent-blue: #4f68b8;
+  --accent-soft: #e6e3f3;
+  --accent-warm: #a594d4;
+  --accent-text: #5548ba;
+  --on-accent: #ffffff;
+  --danger: #a8443a;
+  /* The rule that marks the selected item. Flat, like everything else. */
+  --brand-line: var(--accent);
+
+  /* Atmosphere behind the founder portrait */
+  --glow-a: rgba(93, 82, 194, 0.1);
+  --glow-b: rgba(79, 104, 184, 0.07);
+  --glow-c: rgba(230, 227, 243, 0.9);
+  --plate-top: rgba(255, 255, 255, 0.7);
+  --plate-bottom: rgba(255, 255, 255, 0.14);
+  --ring: rgba(21, 21, 23, 0.1);
+  --ring-accent: rgba(93, 82, 194, 0.5);
+  --portrait-shadow: drop-shadow(0 0 1px rgba(21, 21, 23, 0.14));
+  --metal: #a9a6b6;
+  --metal-env: 0.9;
+  --spot: rgba(112, 106, 140, 0.11);
+  --grade-edge: rgba(24, 20, 34, 0.12);
+  --glass: rgba(248, 247, 244, 0.72);
+  --header-bg: rgba(242, 241, 237, 0.95);
+  --panel-mix: 12%;
+  --grain-opacity: 0.06;
+  --shadow-soft: 0 1px 2px rgba(21, 21, 23, 0.04), 0 16px 40px -18px rgba(21, 21, 23, 0.16);
+
+  /* Matte finishes for the 3D objects */
+  --matte-bone: #d3cdc1;
+  --matte-dusk: #776dbd;
+  --matte-slate: #5d6b90;
+  --matte-graphite: #2e2e33;
+
+  /* Theme toggle: sun in light, crescent in dark */
+  --tt-core-scale: 1;
+  --tt-cut-x: 12px;
+  --tt-cut-y: -8px;
+  --tt-rays-scale: 1;
+  --tt-rays-opacity: 1;
+  --tt-rotate: 90deg;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --header-h: 4.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #0a0a0c;
+    --bg-elevated: #121215;
+    --surface: #18181b;
+    --fg: #eeede8;
+    --fg-2: #a4a39d;
+    --fg-3: #75746e;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+
+    --accent: #8279d6;
+    --accent-2: #a59ce6;
+    --accent-blue: #7b90d4;
+    --accent-soft: rgba(130, 121, 214, 0.14);
+    --accent-warm: #d6c9ec;
+    --accent-text: #a59ce6;
+    --on-accent: #ffffff;
+    --danger: #e8897d;
+    --brand-line: var(--accent);
+
+    --glow-a: rgba(130, 121, 214, 0.15);
+    --glow-b: rgba(123, 144, 212, 0.08);
+    --glow-c: rgba(214, 201, 236, 0.06);
+    --plate-top: rgba(255, 255, 255, 0.06);
+    --plate-bottom: rgba(255, 255, 255, 0.01);
+    --ring: rgba(255, 255, 255, 0.1);
+    --ring-accent: rgba(165, 156, 230, 0.6);
+    --portrait-shadow: drop-shadow(0 0 1px rgba(236, 232, 226, 0.18));
+    --metal: #c8c5d3;
+    --metal-env: 1.05;
+    --spot: rgba(206, 200, 222, 0.1);
+    --grade-edge: rgba(4, 4, 8, 0.55);
+    --glass: rgba(24, 24, 27, 0.66);
+    --header-bg: rgba(10, 10, 12, 0.94);
+    --panel-mix: 16%;
+    --grain-opacity: 0.085;
+    --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+
+    --matte-bone: #d9d4ca;
+    --matte-dusk: #8a80c9;
+    --matte-slate: #6f7c9e;
+    --matte-graphite: #3c3c43;
+
+    --tt-core-scale: 1.7;
+    --tt-cut-x: 0px;
+    --tt-cut-y: 0px;
+    --tt-rays-scale: 0.4;
+    --tt-rays-opacity: 0;
+    --tt-rotate: 0deg;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0a0a0c;
+  --bg-elevated: #121215;
+  --surface: #18181b;
+  --fg: #eeede8;
+  --fg-2: #a4a39d;
+  --fg-3: #75746e;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  --accent: #8279d6;
+  --accent-2: #a59ce6;
+  --accent-blue: #7b90d4;
+  --accent-soft: rgba(130, 121, 214, 0.14);
+  --accent-warm: #d6c9ec;
+  --accent-text: #a59ce6;
+  --on-accent: #ffffff;
+  --danger: #e8897d;
+  --brand-line: var(--accent);
+
+  --glow-a: rgba(130, 121, 214, 0.15);
+  --glow-b: rgba(123, 144, 212, 0.08);
+  --glow-c: rgba(214, 201, 236, 0.06);
+  --plate-top: rgba(255, 255, 255, 0.06);
+  --plate-bottom: rgba(255, 255, 255, 0.01);
+  --ring: rgba(255, 255, 255, 0.1);
+  --ring-accent: rgba(165, 156, 230, 0.6);
+  --portrait-shadow: drop-shadow(0 0 1px rgba(236, 232, 226, 0.18));
+  --metal: #c8c5d3;
+  --metal-env: 1.05;
+  --spot: rgba(206, 200, 222, 0.1);
+  --grade-edge: rgba(4, 4, 8, 0.55);
+  --glass: rgba(24, 24, 27, 0.66);
+  --header-bg: rgba(10, 10, 12, 0.94);
+  --panel-mix: 16%;
+  --grain-opacity: 0.085;
+  --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+
+  --matte-bone: #d9d4ca;
+  --matte-dusk: #8a80c9;
+  --matte-slate: #6f7c9e;
+  --matte-graphite: #3c3c43;
+
+  --tt-core-scale: 1.7;
+  --tt-cut-x: 0px;
+  --tt-cut-y: 0px;
+  --tt-rays-scale: 0.4;
+  --tt-rays-opacity: 0;
+  --tt-rotate: 0deg;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elevated: var(--bg-elevated);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-warm: var(--accent-warm);
+  --color-accent-text: var(--accent-text);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-instrument), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --breakpoint-xs: 26rem;
+}
+
+/* ---------- Base ---------- */
+
+/* Kept outside the cascade layers so the page ground and text colour always
+   come from the tokens, whatever stylesheet the page is embedded under. */
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  overflow-x: clip;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* The height of the header once the page has scrolled. */
+    scroll-padding-top: 3.75rem;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* A short cross-fade while the palette changes. Only active for ~450ms. */
+.theme-switching,
+.theme-switching *:not(.tt-core, .tt-cut, .tt-rays, .tt-icon),
+.theme-switching *::before,
+.theme-switching *::after {
+  transition:
+    background-color 0.4s var(--ease-soft),
+    border-color 0.4s var(--ease-soft),
+    color 0.4s var(--ease-soft),
+    fill 0.4s var(--ease-soft),
+    stroke 0.4s var(--ease-soft) !important;
+}
+
+/* ---------- Layout helpers ---------- */
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 82.5rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 40rem) {
+    .shell {
+      padding-inline: 2rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .shell {
+      padding-inline: 3rem;
+    }
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.018em;
+    line-height: 1;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 4.2vw, 3.5rem);
+    letter-spacing: -0.018em;
+    line-height: 1.02;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Film grain over the whole page. Static, so it costs nothing after paint. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* ---------- Page-load choreography (hero) ---------- */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes portrait-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2.5%, 0) scale(1.035);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* The headline types itself on a loop (TypeLines): every character keeps its
+   place from the first paint and is only shown or hidden, so nothing reflows.
+   A caret rides after the last character shown and blinks while the text is
+   held. Characters hide by colour, so the caret (its own colour) stays visible
+   even before the first character. */
+.type-line {
+  display: block;
+}
+
+.type-char {
+  position: relative;
+  color: transparent;
+  transition: color 0.12s var(--ease-soft);
+}
+
+.type-char[data-on] {
+  color: inherit;
+}
+
+.type-char[data-caret="after"]::after,
+.type-char[data-caret="before"]::before {
+  content: "";
+  position: absolute;
+  top: 0.14em;
+  bottom: 0.02em;
+  width: max(2px, 0.035em);
+  background: var(--fg);
+}
+
+.type-char[data-caret="after"]::after {
+  right: -0.07em;
+}
+
+.type-char[data-caret="before"]::before {
+  left: -0.07em;
+}
+
+.type-lines[data-holding] .type-char[data-caret]::after {
+  animation: type-blink 1.1s linear infinite;
+}
+
+@keyframes type-blink {
+  0%,
+  46% {
+    opacity: 1;
+  }
+  54%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Without script, the headline is simply there. */
+@media (scripting: none) {
+  .type-char {
+    color: inherit;
+  }
+
+  .type-char::before,
+  .type-char::after {
+    display: none;
+  }
+}
+
+.load-fade {
+  animation: fade-up 0.9s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.load-in {
+  animation: fade-in 1.2s var(--ease-soft) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.portrait-in {
+  animation: portrait-in 1.5s var(--ease-out-expo) both;
+  animation-delay: 180ms;
+}
+
+/* ---------- Scroll reveal ----------
+ * Content is visible by default. Reveal.tsx only hides a block if it starts
+ * below the fold, then lets it in when it arrives. No JS, no hidden content.
+ */
+
+.reveal[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  filter: blur(6px);
+}
+
+.reveal[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms),
+    transform 1s var(--ease-out-expo) var(--reveal-delay, 0ms),
+    filter 0.9s var(--ease-out-expo) var(--reveal-delay, 0ms);
+}
+
+/* ---------- Links and buttons ---------- */
+
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.45s var(--ease-out-expo);
+}
+
+.link-underline:hover,
+.link-underline:focus-visible,
+.link-underline[aria-current="true"] {
+  background-size: 100% 1px;
+}
+
+/* The primary button: a flat, soft-touch pill with a soft contact shadow, never a glow. */
+.matte-pill {
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.08),
+    0 10px 24px -14px rgba(0, 0, 0, 0.45);
+}
+
+.matte-pill:hover,
+.matte-pill:focus-visible {
+  background-color: color-mix(in oklab, var(--fg) 90%, var(--bg));
+}
+
+/* Arrow that leaves top-right while its twin arrives from bottom-left. */
+.arrow-swap {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+}
+
+.arrow-swap > * {
+  grid-area: 1 / 1;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.arrow-swap > :last-child {
+  transform: translate(-110%, 110%);
+}
+
+.arrow-host:hover .arrow-swap > :first-child,
+.arrow-host:focus-visible .arrow-swap > :first-child {
+  transform: translate(110%, -110%);
+}
+
+.arrow-host:hover .arrow-swap > :last-child,
+.arrow-host:focus-visible .arrow-swap > :last-child {
+  transform: translate(0, 0);
+}
+
+/* Same idea for a link that scrolls down the page. */
+.arrow-swap[data-dir="down"] > :last-child {
+  transform: translate(0, -120%);
+}
+
+.arrow-host:hover .arrow-swap[data-dir="down"] > :first-child,
+.arrow-host:focus-visible .arrow-swap[data-dir="down"] > :first-child {
+  transform: translate(0, 120%);
+}
+
+.arrow-host:hover .arrow-swap[data-dir="down"] > :last-child,
+.arrow-host:focus-visible .arrow-swap[data-dir="down"] > :last-child {
+  transform: translate(0, 0);
+}
+
+/* ---------- Theme toggle ---------- */
+
+.tt-core,
+.tt-cut,
+.tt-rays,
+.tt-icon {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    opacity 0.35s var(--ease-soft);
+}
+
+.tt-icon {
+  transform: rotate(var(--tt-rotate));
+}
+
+.tt-core {
+  transform: scale(var(--tt-core-scale));
+}
+
+.tt-cut {
+  transform: translate(var(--tt-cut-x), var(--tt-cut-y));
+}
+
+.tt-rays {
+  transform: scale(var(--tt-rays-scale));
+  opacity: var(--tt-rays-opacity);
+}
+
+/* ---------- Shared bits ---------- */
+
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Fades the bottom and sides of a cutout photo into the page. */
+.portrait-cutout {
+  --side-stop: calc(100% - var(--side-fade, 0%));
+  -webkit-mask-image:
+    linear-gradient(180deg, #000 var(--fade-start, 70%), transparent var(--fade-end, 97%)),
+    linear-gradient(90deg, transparent, #000 var(--side-fade, 0%), #000 var(--side-stop), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(180deg, #000 var(--fade-start, 70%), transparent var(--fade-end, 97%)),
+    linear-gradient(90deg, transparent, #000 var(--side-fade, 0%), #000 var(--side-stop), transparent);
+  mask-composite: intersect;
+}
+
+/* ---------- Cover ---------- */
+
+/* The masthead and the portrait share one set of measurements, so the portrait
+   always starts below the masthead's lowest stroke (the descender of the p)
+   and never hides a letter, at any window size. */
+.cover {
+  --masthead-size: clamp(3.4rem, min(17.4vw, 28svh), 18.5rem);
+  --masthead-top: calc(4.5rem + 1svh);
+  /* Line box (0.82em), the descender below it, and a little air. */
+  --masthead-bottom: calc(var(--masthead-top) + var(--masthead-size) * 1.04);
+}
+
+.cover-masthead {
+  top: var(--masthead-top);
+}
+
+.masthead {
+  font-size: var(--masthead-size);
+  line-height: 0.82;
+  letter-spacing: -0.035em;
+}
+
+/* Flat, matte ink, a shade quieter than the body text so she stays in front of it. */
+.masthead-rise {
+  display: block;
+  padding-inline: 0.04em;
+  color: color-mix(in oklab, var(--fg) 84%, var(--bg));
+  animation: masthead-in 1.3s var(--ease-out-expo) both;
+  animation-delay: 60ms;
+}
+
+@keyframes masthead-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16%, 0) scale(1.04);
+    filter: blur(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.cover-spot {
+  left: 50%;
+  top: 2svh;
+  width: min(80rem, 110vw);
+  height: 86svh;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--spot), transparent 72%);
+  pointer-events: none;
+  animation: spot-breathe 9s var(--ease-soft) infinite alternate;
+}
+
+@keyframes spot-breathe {
+  from {
+    opacity: 0.75;
+    scale: 0.96;
+  }
+  to {
+    opacity: 1;
+    scale: 1.04;
+  }
+}
+
+/* She fills the height between the masthead and the bottom of the cover. */
+.cover-portrait {
+  height: min(66svh, calc(76svh - var(--masthead-bottom)));
+  max-width: 100%;
+  transform-origin: 50% 100%;
+  filter: var(--portrait-shadow);
+  will-change: transform;
+}
+
+@media (min-width: 64rem) {
+  .cover-portrait {
+    height: min(62rem, calc(100svh - var(--masthead-bottom)));
+  }
+}
+
+.cover-figure {
+  --fade-start: 60%;
+  --fade-end: 96%;
+  --side-fade: 14%;
+  animation: portrait-in 1.3s var(--ease-out-expo) both;
+  animation-delay: 120ms;
+}
+
+/* Grade and scroll shade are both cut to her silhouette. */
+.cover-grade,
+.cover-shade {
+  pointer-events: none;
+  -webkit-mask-image: var(--cover-mask);
+  mask-image: var(--cover-mask);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: bottom center;
+  mask-position: bottom center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.cover-grade {
+  background: radial-gradient(ellipse 58% 46% at 50% 30%, transparent 45%, var(--grade-edge) 100%);
+}
+
+.cover-shade {
+  opacity: 0;
+  background: var(--bg);
+}
+
+.cover-note {
+  text-align: right;
+}
+
+.scroll-cue {
+  position: relative;
+  width: 1px;
+  height: 2.25rem;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--fg-2);
+  animation: scroll-cue 2.2s var(--ease-out-expo) infinite;
+}
+
+@keyframes scroll-cue {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* ---------- Manifesto ---------- */
+
+.manifesto-word {
+  transition: opacity 0.2s linear;
+}
+
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 48s linear infinite;
+}
+
+.marquee-group {
+  display: flex;
+}
+
+.marquee-item {
+  padding: 1.1rem 2.2rem;
+  font-size: clamp(2.25rem, 6vw, 4.75rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--fg) 45%, transparent);
+  transition: color 0.4s var(--ease-soft);
+}
+
+.marquee-item:nth-child(3n + 1) {
+  color: var(--fg);
+  -webkit-text-stroke: 0;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Phone slots ---------- */
+
+.phone-fallback {
+  transition: opacity 0.8s var(--ease-soft);
+}
+
+.phone-fallback[data-live="true"] {
+  opacity: 0;
+}
+
+.slot-glow {
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--tone, var(--accent)) var(--slot-glow, 16%), transparent),
+    transparent 72%
+  );
+  transition: background 0.8s var(--ease-soft);
+}
+
+/* ---------- Founder ---------- */
+
+/* Charcoal seamless paper, lit softly from behind her head, as in a portrait studio. */
+.founder-backdrop {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 28%, rgba(238, 232, 246, 0.17), transparent 70%),
+    linear-gradient(180deg, #36343d 0%, #25242b 55%, #17171b 100%);
+}
+
+/* Below the handle chip, sized so her portrait (68% of the card, from the
+   bottom) starts just under it. */
+.founder-masthead {
+  font-size: clamp(4rem, 17vw, 7rem);
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  color: rgba(240, 237, 230, 0.88);
+}
+
+.story-bar {
+  flex: 1;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.story-bar > span {
+  display: block;
+  height: 100%;
+  background: #fff;
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: story-0 15s linear infinite;
+}
+
+.story-bar:nth-child(2) > span {
+  animation-name: story-1;
+}
+
+.story-bar:nth-child(3) > span {
+  animation-name: story-2;
+}
+
+@keyframes story-0 {
+  0% {
+    transform: scaleX(0);
+  }
+  33.33%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes story-1 {
+  0%,
+  33.33% {
+    transform: scaleX(0);
+  }
+  66.66%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes story-2 {
+  0%,
+  66.66% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- Smooth scrolling (Lenis) ---------- */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ---------- Cursor follower (mouse only) ---------- */
+
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 80;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--fg) 38%, transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.3s var(--ease-soft),
+    width 0.45s var(--ease-out-expo),
+    height 0.45s var(--ease-out-expo),
+    margin 0.45s var(--ease-out-expo),
+    border-color 0.45s var(--ease-soft),
+    background-color 0.45s var(--ease-soft);
+  will-change: transform;
+}
+
+.cursor-ring[data-visible="true"] {
+  opacity: 1;
+}
+
+.cursor-ring[data-hover="true"] {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-color: color-mix(in oklab, var(--accent-2) 70%, transparent);
+  background-color: color-mix(in oklab, var(--accent) 10%, transparent);
+}
+
+.cursor-ring[data-down="true"] {
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+}
+
+/* ---------- Closing figure ---------- */
+
+.crore-figure[data-gl="ready"] .crore-fallback {
+  opacity: 0;
+}
+
+.crore-figure canvas {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
+}
+
+.crore-figure[data-gl="ready"] canvas {
+  opacity: 1;
+}
+
+.crore-fallback {
+  transition: opacity 0.6s var(--ease-soft);
+}
+
+/* ---------- Services: expanding columns ---------- */
+
+.cap-row {
+  container-type: inline-size;
+}
+
+.cap-panel {
+  transition:
+    flex-grow 0.7s var(--ease-out-expo),
+    background-color 0.5s var(--ease-soft);
+}
+
+.cap-detail {
+  transition:
+    opacity 0.5s var(--ease-soft),
+    transform 0.7s var(--ease-out-expo);
+}
+
+/* ---------- Enquiry form (Start a Campaign) ---------- */
+
+.enquiry {
+  width: min(44rem, calc(100vw - 2rem));
+  max-width: none;
+  max-height: min(92svh, 58rem);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line-strong);
+  border-radius: 1.75rem;
+  background: var(--bg-elevated);
+  color: var(--fg);
+  box-shadow: var(--shadow-soft);
+}
+
+.enquiry[open] {
+  animation: enquiry-in 0.5s var(--ease-out-expo);
+}
+
+.enquiry::backdrop {
+  background: color-mix(in oklab, var(--bg) 76%, transparent);
+  animation: fade-in 0.3s var(--ease-soft);
+}
+
+@keyframes enquiry-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.enquiry-panel {
+  padding: 1.5rem;
+}
+
+@media (min-width: 40rem) {
+  .enquiry-panel {
+    padding: 2.5rem;
+  }
+}
+
+/* The page behind stays put while the form is open (touch and keyboard too). */
+html.enquiry-open {
+  overflow: hidden;
+}
+
+.field-label {
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--fg-2);
+}
+
+.field-input {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.875rem;
+  background: var(--surface);
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--fg);
+  transition:
+    border-color 0.3s var(--ease-soft),
+    box-shadow 0.3s var(--ease-soft);
+}
+
+textarea.field-input {
+  resize: vertical;
+  min-height: 7.5rem;
+}
+
+.field-input::placeholder {
+  color: var(--fg-3);
+}
+
+.field-input:hover {
+  border-color: color-mix(in oklab, var(--fg) 30%, transparent);
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent-text);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  color: var(--fg-2);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 0.25s var(--ease-soft),
+    border-color 0.25s var(--ease-soft),
+    color 0.25s var(--ease-soft);
+}
+
+.chip:hover {
+  border-color: color-mix(in oklab, var(--fg) 35%, transparent);
+  color: var(--fg);
+}
+
+.chip:has(input:checked) {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.chip:has(input:focus-visible) {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
+}
+
+.enquiry-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 1.75rem;
+  border-radius: 999px;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.08),
+    0 10px 24px -14px rgba(0, 0, 0, 0.45);
+  transition: background-color 0.3s var(--ease-soft);
+}
+
+.enquiry-submit:hover,
+.enquiry-submit:focus-visible {
+  background: color-mix(in oklab, var(--fg) 90%, var(--bg));
+}
+
+.enquiry-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .load-fade,
+  .load-in,
+  .portrait-in,
+  .masthead-rise,
+  .cover-figure,
+  .cover-spot,
+  .scroll-cue::after,
+  .marquee-track,
+  .enquiry[open],
+  .enquiry::backdrop {
+    animation: none;
+  }
+
+  /* The headline is simply there, without the typing or the caret. */
+  .type-char {
+    color: inherit;
+    transition: none;
+  }
+
+  .type-char::before,
+  .type-char::after {
+    display: none;
+  }
+
+  .story-bar > span {
+    animation: none;
+  }
+
+  .story-bar:first-child > span {
+    transform: none;
+  }
+
+  .cap-panel,
+  .cap-detail,
+  .arrow-swap > *,
+  .link-underline,
+  .tt-core,
+  .tt-cut,
+  .tt-rays,
+  .tt-icon {
+    transition-duration: 0.01ms;
+  }
+}
