@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { Cursor } from "@/components/ui/Cursor";
 import { MotionProvider } from "@/components/ui/MotionProvider";
 import { site } from "@/content/site";
-import { introInitScript } from "@/lib/intro";
 import { themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
@@ -50,8 +49,6 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <head>
         {/* Applies a stored theme choice before first paint, so there is no flash. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        {/* Decides before first paint whether the opening sequence plays this visit. */}
-        <script dangerouslySetInnerHTML={{ __html: introInitScript }} />
       </head>
       <body>
         <a

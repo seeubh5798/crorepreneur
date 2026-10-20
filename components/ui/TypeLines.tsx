@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { afterIntro } from "@/lib/intro";
 
 type TypeLinesProps = {
   lines: readonly string[];
@@ -64,14 +63,8 @@ export function TypeLines({ lines, start = 400, type = 58, rest = 300, hold = 28
         timer = window.setTimeout(tick, erase);
       }
     };
-    // Starts once the page is showing: after the opening sequence, if there is one.
-    const stop = afterIntro(() => {
-      timer = window.setTimeout(tick, start);
-    });
-    return () => {
-      stop();
-      window.clearTimeout(timer);
-    };
+    timer = window.setTimeout(tick, start);
+    return () => window.clearTimeout(timer);
   }, [total, lineEnds, start, type, rest, hold, erase]);
 
   return (

@@ -1,12 +1,11 @@
 # Crorepreneur
 
 Website for Crorepreneur, an Instagram influencer marketing agency founded by
-Chabi Gupta. One page, told as a scroll story. It opens with a 3D flight,
-driven by scrolling, from the globe down to Ranchi, Chabi's home city. Then
-come the founder on a magazine-style cover with a headline that types itself
-on a loop, a manifesto, selected campaigns, services, the method, a section
-on the founder, and the call to start a campaign, which opens an enquiry
-form. Light and dark themes, in a matte finish.
+Chabi Gupta. One page, told as a scroll story: the founder on a magazine-style
+cover with a headline that types itself on a loop, a manifesto, selected
+campaigns, services, the method, a section on the founder, and the call to
+start a campaign, which opens an enquiry form. Light and dark themes, in a
+matte finish.
 
 Built with Next.js (App Router), React, TypeScript and Tailwind CSS v4.
 3D with three.js, React Three Fiber and drei; scroll animation with GSAP
@@ -24,51 +23,6 @@ npm run lint
 ```
 
 Fonts are self-hosted from `app/fonts`, so the build needs no network access.
-
-## The opening sequence
-
-The page opens with a 3D flight that moves as the visitor scrolls
-(`components/intro/`):
-
-1. **The world:** a matte globe of dots, swaying gently until the visitor
-   scrolls.
-2. **India:** its dots light up in violet and its outline draws itself.
-3. **Jharkhand:** the state rises out of the map as a slab.
-4. **Ranchi:** a pin drops on Chabi's home city.
-
-Scrolling on opens the page out of Ranchi, from the centre of the screen.
-Once it is fully open and the scrolling pauses, the page takes over and
-scrolls as normal. The whole flight is about three screens of scrolling.
-
-- It is there every time the page loads: on the first visit and after every
-  refresh, which also brings the page back to its top. In a tab opened in
-  the background, it waits until the tab is shown.
-- Wheel, trackpad, touch and keys all move it, and scrolling back up flies
-  back out. Escape, End or the Skip button flies the rest of the way.
-- Visitors who prefer reduced motion never see it, and neither do browsers
-  without WebGL. If the map data or the 3D does not load within a few
-  seconds, the page simply opens.
-- A script in `<head>` (`lib/intro.ts`) decides before the first paint
-  whether it plays, so the page never flashes underneath it.
-- While it is on screen, the cover's entrance, the typing headline, smooth
-  scrolling and the page's own 3D wait. Its canvas is removed once the page
-  takes over.
-- The camera path and where each place appears are at the top of
-  `components/intro/IntroCanvas.tsx`. How far to scroll is `SCREENS` in
-  `components/intro/Intro.tsx`. The captions are under `intro` in
-  `content/site.ts`.
-
-The map data, `public/geo/intro.json` (about 120 KB), is built from
-[Natural Earth](https://www.naturalearthdata.com) (public domain) by
-`scripts/build-intro-geo.py`. India's outline comes from Natural Earth's
-India point-of-view boundaries, so it follows India's official map. To
-rebuild it you need Python 3 with shapely. The first run downloads about
-55 MB of source data:
-
-```bash
-pip install shapely
-python3 scripts/build-intro-geo.py
-```
 
 ## How the 3D works
 
@@ -169,7 +123,6 @@ and the avatars.
 ```
 app/                  Layout, page, design tokens (globals.css), fonts
 components/
-  intro/              The opening sequence: overlay and 3D flight
   layout/             Navbar, MobileMenu, Footer
   sections/           Hero, Manifesto, ProjectShowcase, Capabilities,
                       Process, Founder, FinalCTA
@@ -181,11 +134,8 @@ components/
                       Wordmark, PhoneSlot, Reveal, Magnetic, CountUp,
                       CopyEmail, Cursor, icons
 content/site.ts       All copy and placeholder content
-lib/                  Story state, intro state, enquiry delivery, theme,
-                      helpers
+lib/                  Story state, enquiry delivery, theme, helpers
 public/images/        founder.webp (the portrait on the site)
-public/geo/           intro.json (map data for the opening sequence)
-scripts/              build-intro-geo.py (builds that map data)
 design/               founder-original.webp (unedited cutout, not published)
 ```
 

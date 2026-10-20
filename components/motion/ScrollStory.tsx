@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Lenis from "lenis";
 import { useEffect } from "react";
-import { afterIntroEnds } from "@/lib/intro";
 import { setLenis } from "@/lib/smooth";
 import { setStory, story, type StageId } from "@/lib/story";
 
@@ -39,12 +38,7 @@ export function ScrollStory() {
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
-    // Held still until the opening sequence has fully opened the page, so the
-    // scroll that skips it does not also carry the visitor past the cover.
-    lenis.stop();
-    const release = afterIntroEnds(() => lenis.start());
     return () => {
-      release();
       gsap.ticker.remove(tick);
       lenis.destroy();
       setLenis(null);

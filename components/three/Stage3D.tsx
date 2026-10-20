@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { Component, useEffect, useState, type ReactNode } from "react";
-import { afterIntroEnds } from "@/lib/intro";
 import { supportsWebGL } from "./shared";
 
 const StoryCanvas = dynamic(() => import("./story/StoryCanvas"), { ssr: false });
@@ -31,19 +30,13 @@ export function Stage3D() {
     if (reduced || !supportsWebGL()) return;
     const compact = window.matchMedia("(max-width: 63.99rem), (pointer: coarse)").matches;
     const start = () => setMode(compact ? "compact" : "full");
-    // If the opening sequence plays, wait until it is gone, so the two scenes
-    // never compete for the GPU.
-    let idle = 0;
-    const stop = afterIntroEnds(() => {
-      idle =
-        typeof window.requestIdleCallback === "function"
-          ? window.requestIdleCallback(start, { timeout: 1200 })
-          : window.setTimeout(start, 400);
-    });
+    const id =
+      typeof window.requestIdleCallback === "function"
+        ? window.requestIdleCallback(start, { timeout: 1200 })
+        : window.setTimeout(start, 400);
     return () => {
-      stop();
-      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idle);
-      else window.clearTimeout(idle);
+      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(id);
+      else window.clearTimeout(id);
     };
   }, []);
 
