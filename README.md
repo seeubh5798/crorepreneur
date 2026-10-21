@@ -1,16 +1,17 @@
 # Crorepreneur
 
 Website for Crorepreneur, an Instagram influencer marketing agency founded by
-Chabi Gupta. One page, told as a scroll story: the founder on a magazine-style
-cover with a headline that types itself on a loop, a manifesto, selected
-campaigns, services, the method, a section on the founder, and the call to
-start a campaign, which opens an enquiry form. Light and dark themes, in a
-matte finish.
+Chabi Gupta. One page, told as a scroll story: the founder on a
+magazine-style cover with a headline that types itself on a loop, a
+manifesto, the work (real case studies), the one service (hyperlocal
+campaigns), the method, a section on the founder, and the call to start a
+campaign, which opens an enquiry form. A separate About page (`/about`)
+tells the story and introduces the team. Light and dark themes, in a matte
+finish.
 
 Built with Next.js (App Router), React, TypeScript and Tailwind CSS v4.
-3D with three.js, React Three Fiber and drei; scroll animation with GSAP
-ScrollTrigger and Lenis smooth scrolling; UI motion with Motion; icons from
-Lucide.
+Scroll animation with GSAP ScrollTrigger and Lenis smooth scrolling; UI
+motion with Motion; icons from Lucide.
 
 ## Run it
 
@@ -24,59 +25,67 @@ npm run lint
 
 Fonts are self-hosted from `app/fonts`, so the build needs no network access.
 
-## How the 3D works
+## The work
 
-A single fixed WebGL canvas sits behind the whole page
-(`components/three/Stage3D.tsx`). The HTML scrolls over it.
+The Work section (`components/sections/Work.tsx`, content under `work` in
+`content/site.ts`) shows Crorepreneur's real work, in this order:
 
-- **The phone** (`story/Phone.tsx`) flies to whichever slot the section on
-  screen reserves for it. A slot is any element with a `data-anchor` name
-  (see `story/anchors.ts`). It turns a full circle when the section changes,
-  rocks with scroll speed and follows the mouse. It has a satin titanium
-  frame, a soft-touch back and side buttons. Its screen is drawn with the
-  canvas API (`story/screen.ts`): Chabi's reel, or the selected campaign,
-  with a playback bar that keeps running. The view counter climbs from 100
-  to 1,00,00,000 as the page scrolls.
-- **The orrery** (`story/Orrery.tsx`) is a gyroscope of three thin rings, in
-  satin metal and matte violet, each turning on its own axis inside the
-  next, with matte spheres on tilted orbits around it. It orbits Chabi's
-  head on the cover and her portrait further down, wraps the phone wherever
-  the phone lands (passing in front of it and behind it), and drifts large
-  and far back behind the sections that are mostly text. It assembles with a
-  slow spin when the page opens and turns faster while the page scrolls.
-- **The lighting** (`story/Studio.tsx`) is a drei `Environment` built from
-  soft boxes (`Lightformer`), plus muted rim lights that keep moving, so the
-  light travels over every surface.
-- **The atmosphere** (`story/StoryCanvas.tsx`): a fog in the page's own
-  colour fades whatever is far behind the phone into the page, for depth at
-  no cost per frame.
-- **The closing figure** (`crore/CroreScene.tsx`) is one crore in satin
-  metal. The numerals fly in, then turn to face the cursor.
+- **The numbers:** four figures that count up as they scroll into view.
+- **Featured:** the Netflix India launch of *Maa Behen*.
+- **Brand campaigns:** ITC Sunrise Masale (Chhath), Horlicks and Jharkhand
+  Tourism.
+- **Strategy and consulting:** the jewellery retailer in Jharkhand,
+  Microsoft Copilot and Ben Olive Mill.
+- **The page and the press:** @yourregularmom beside the Forbes India
+  feature.
 
-The page and the scene share state through `lib/story.ts`.
-`components/motion/ScrollStory.tsx` drives all of it from the scroll
-position: the current section, scroll speed, view count, the cover sinking
-into the dark, and the manifesto lighting up word by word.
+Each case links to its original post. Every number comes from the post
+itself, as of October 2026, so update them in `content/site.ts` as they
+grow. Cover images are stills from each post or video, saved as WebP in
+`public/images/work/`. On phones, each row of cards is a rail you swipe
+sideways; from tablets up it is a grid.
 
-It is built to stay light so scrolling stays smooth: no post-processing
-(the canvas renders straight to the screen, with neutral tone mapping), a
-capped pixel ratio, slots measured once and then placed from the scroll
-position (nothing reads layout in the render loop), and the closing figure's
-canvas only draws while it is on screen. If the frame rate still drops, the
-main canvas lowers its resolution.
+## The About page
 
-The 3D loads after the page is interactive and only where WebGL works.
-Visitors who prefer reduced motion get no 3D and no scroll effects. Flat phone
-mock-ups stand in each slot until the 3D is drawing, so the layout never has a
-hole. On phones the scene uses fewer icons and a lower pixel ratio.
+`/about` (`app/about/page.tsx`, sections in `components/about/`, copy under
+`about` in `content/site.ts`) has four parts:
+
+- **Opening:** Chabi's line on resonance.
+- **How we got here:** a timeline from 2020 to 2026.
+- **The people behind it:** Chabi Gupta (founder, MBA from Kelley) and
+  Shubham Kumar Agrawal (technology, IIT Bhubaneswar).
+- **What we believe**, then a way to start a campaign.
+
+Its bar keeps a **Back to home** button in view, and the home page links to
+it from the navigation, the footer and the founder section.
+
+Both portraits are transparent cutouts on the same studio backdrop as the
+founder card on the home page. Chabi's is `public/images/founder.webp`.
+Shubham's, `public/images/team/shubham.webp`, is his LinkedIn photo with the
+background removed. To frame a portrait, set `image.height` (the figure's
+height as a share of the frame) and `image.top` (where its top sits) for that
+person in `about.team`. The facts come from both LinkedIn profiles, Chabi's
+posts and Forbes India, as of October 2026.
+
+## Motion
+
+`components/motion/ScrollStory.tsx` does everything that follows the
+scroll: smooth, weighted scrolling on mouse and trackpad (Lenis), the cover
+sinking into the dark as it scrolls away, and the manifesto lighting up
+word by word. Blocks ease in as they enter the screen (`Reveal`) and
+figures count up once (`CountUp`).
+
+There is no WebGL on the page, which keeps it light and fast on phones.
+Visitors who prefer reduced motion get the page still, with no scroll
+effects.
 
 ## The Start a Campaign form
 
 Every "Start a Campaign" button opens the enquiry form
 (`components/ui/EnquiryDialog.tsx`, copy under `enquiry` in
 `content/site.ts`): name, work email, brand, website or Instagram, the
-services they need, a budget range, phone and a note. Name, email and brand
-are required.
+cities or regions the campaign should run in, a budget range, phone and a
+note. Name, email and brand are required.
 
 There is no backend yet, so `sendEnquiry()` in `lib/enquiry.ts` opens the
 visitor's email app with the enquiry filled in, addressed to
@@ -88,15 +97,13 @@ case. Without script, the buttons open a blank email instead.
 ## Replace the placeholders
 
 Everything temporary is marked `PLACEHOLDER` in **`content/site.ts`**. That
-file holds all copy on the site.
+file holds all copy on the site, including the case studies under `work`.
 
 | What | Where |
 | --- | --- |
 | Founder photo | Replace `public/images/founder.webp` (transparent cutout) |
-| Founder name, bio and quote | `founder` and `founderSection` in `content/site.ts` |
+| Founder name, bio and quote | `founder` and `founderSection` in `content/site.ts` (now her own words, from LinkedIn) |
 | Contact email | `site.contact.email` |
-| Campaigns and their numbers | `work.projects` |
-| "Sample campaigns" notice | Set `work.sampleNotice` to `null` once the work is real |
 | Social links in the footer | Add an `href` to each entry in `site.socials` |
 
 ### The founder photo
@@ -115,27 +122,27 @@ outside `public/` so it is not published; copy it over
 - Update `founder.image.aspect` to its width divided by its height.
 - `founder.image.avatar` sets the crop of the small round avatar.
 
-The same file is used on the cover, the phone's screen, the founder section
-and the avatars.
+The same file is used on the cover, the founder section and the avatars.
 
 ## Where things live
 
 ```
 app/                  Layout, page, design tokens (globals.css), fonts
+app/about/            The About page
 components/
+  about/              About page sections, its bar and back button
   layout/             Navbar, MobileMenu, Footer
-  sections/           Hero, Manifesto, ProjectShowcase, Capabilities,
-                      Process, Founder, FinalCTA
+  sections/           Hero, Manifesto, Work, Capabilities, Process,
+                      Founder, FinalCTA
   motion/             ScrollStory: GSAP, ScrollTrigger and Lenis
-  three/              Stage3D loader, shared helpers, CroreFigure
-    story/            Phone, Orrery, Studio, screen drawing, anchors
-    crore/            The closing 3D figure
   ui/                 Button, EnquiryDialog, TypeLines, ThemeToggle,
-                      Wordmark, PhoneSlot, Reveal, Magnetic, CountUp,
-                      CopyEmail, Cursor, icons
-content/site.ts       All copy and placeholder content
-lib/                  Story state, enquiry delivery, theme, helpers
+                      Wordmark, Reveal, Magnetic, CountUp, CopyEmail,
+                      Cursor, icons
+content/site.ts       All copy, the case studies and placeholder content
+lib/                  Enquiry delivery, smooth scrolling, theme, helpers
 public/images/        founder.webp (the portrait on the site)
+  work/               Cover images for the case studies
+  team/               Team portraits for the About page
 design/               founder-original.webp (unedited cutout, not published)
 ```
 
@@ -146,8 +153,7 @@ sparingly, flat fills, soft shadows and fine grain, with no gloss or glow.
 
 Colours, type and easing are CSS custom properties at the top of
 `app/globals.css`. The bare `:root` block is the light palette; the two dark
-blocks redefine the same tokens. The 3D reads the same tokens (`--metal`,
-`--matte-*` and `--bg`), so its finishes and backdrop follow the theme.
+blocks redefine the same tokens.
 
 The theme follows the system setting until the visitor uses the toggle. Their
 choice is stored in `localStorage` and applied in `<head>` before first paint.

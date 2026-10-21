@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { capabilities, enquiry as copy, site } from "@/content/site";
+import { enquiry as copy, site } from "@/content/site";
 import { cn } from "@/lib/cn";
 import { sendEnquiry, type Enquiry } from "@/lib/enquiry";
 import { getLenis } from "@/lib/smooth";
@@ -60,7 +60,7 @@ export function EnquiryDialog() {
       company: text("company"),
       website: text("website"),
       phone: text("phone"),
-      services: data.getAll("services").map(String),
+      cities: text("cities"),
       budget: text("budget"),
       message: text("message"),
     };
@@ -137,18 +137,7 @@ export function EnquiryDialog() {
             <Field name="company" {...copy.fields.company} error={errors.company} autoComplete="organization" />
             <Field name="website" {...copy.fields.website} optional autoComplete="url" />
 
-            <fieldset className="sm:col-span-2">
-              <legend className="field-label">
-                {copy.servicesLabel} <span className="text-fg-3">{copy.optional}</span>
-              </legend>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {capabilities.items.map((item) => (
-                  <Chip key={item.id} type="checkbox" name="services" value={item.name}>
-                    {item.name}
-                  </Chip>
-                ))}
-              </div>
-            </fieldset>
+            <Field name="cities" {...copy.fields.cities} optional className="sm:col-span-2" />
 
             <fieldset className="sm:col-span-2">
               <legend className="field-label">
@@ -217,7 +206,7 @@ function Field({ name, label, placeholder, type = "text", error, optional, multi
   );
 }
 
-function Chip({ type, name, value, children }: { type: "checkbox" | "radio"; name: string; value: string; children: ReactNode }) {
+function Chip({ type, name, value, children }: { type: "radio"; name: string; value: string; children: ReactNode }) {
   return (
     <label className="chip">
       <input type={type} name={name} value={value} className="sr-only" />

@@ -7,7 +7,8 @@ export type Enquiry = {
   company: string;
   website: string;
   phone: string;
-  services: string[];
+  /** Where the campaign should run. */
+  cities: string;
   budget: string;
   message: string;
 };
@@ -26,7 +27,7 @@ export function formatEnquiry(enquiry: Enquiry): string {
     `Brand: ${enquiry.company}`,
     enquiry.website && `Website / Instagram: ${enquiry.website}`,
     enquiry.phone && `Phone / WhatsApp: ${enquiry.phone}`,
-    enquiry.services.length > 0 && `Interested in: ${enquiry.services.join(", ")}`,
+    enquiry.cities && `Cities or regions: ${enquiry.cities}`,
     enquiry.budget && `Monthly budget: ${enquiry.budget}`,
   ].filter(Boolean);
   return enquiry.message ? `${details.join("\n")}\n\n${enquiry.message}` : details.join("\n");

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { hero, site } from "@/content/site";
 import { cn } from "@/lib/cn";
@@ -93,6 +94,14 @@ export function Navbar() {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  href={site.about.href}
+                  className="link-underline py-2 text-fg-2 transition-colors duration-300 hover:text-fg"
+                >
+                  {site.about.label}
+                </Link>
+              </li>
             </ul>
           </nav>
 

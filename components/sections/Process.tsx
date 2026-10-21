@@ -53,7 +53,7 @@ export function Process() {
   }, []);
 
   return (
-    <section id="approach" data-stage="approach" aria-labelledby="approach-title" className="relative py-16 lg:py-24">
+    <section id="approach" aria-labelledby="approach-title" className="relative py-16 lg:py-24">
       <div className="shell">
         <Reveal className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <h2 id="approach-title" className="section-title">

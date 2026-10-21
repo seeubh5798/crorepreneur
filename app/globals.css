@@ -44,8 +44,6 @@
   --ring: rgba(21, 21, 23, 0.1);
   --ring-accent: rgba(93, 82, 194, 0.5);
   --portrait-shadow: drop-shadow(0 0 1px rgba(21, 21, 23, 0.14));
-  --metal: #a9a6b6;
-  --metal-env: 0.9;
   --spot: rgba(112, 106, 140, 0.11);
   --grade-edge: rgba(24, 20, 34, 0.12);
   --glass: rgba(248, 247, 244, 0.72);
@@ -53,12 +51,6 @@
   --panel-mix: 12%;
   --grain-opacity: 0.06;
   --shadow-soft: 0 1px 2px rgba(21, 21, 23, 0.04), 0 16px 40px -18px rgba(21, 21, 23, 0.16);
-
-  /* Matte finishes for the 3D objects */
-  --matte-bone: #d3cdc1;
-  --matte-dusk: #776dbd;
-  --matte-slate: #5d6b90;
-  --matte-graphite: #2e2e33;
 
   /* Theme toggle: sun in light, crescent in dark */
   --tt-core-scale: 1;
@@ -104,8 +96,6 @@
     --ring: rgba(255, 255, 255, 0.1);
     --ring-accent: rgba(165, 156, 230, 0.6);
     --portrait-shadow: drop-shadow(0 0 1px rgba(236, 232, 226, 0.18));
-    --metal: #c8c5d3;
-    --metal-env: 1.05;
     --spot: rgba(206, 200, 222, 0.1);
     --grade-edge: rgba(4, 4, 8, 0.55);
     --glass: rgba(24, 24, 27, 0.66);
@@ -114,10 +104,6 @@
     --grain-opacity: 0.085;
     --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.7);
 
-    --matte-bone: #d9d4ca;
-    --matte-dusk: #8a80c9;
-    --matte-slate: #6f7c9e;
-    --matte-graphite: #3c3c43;
 
     --tt-core-scale: 1.7;
     --tt-cut-x: 0px;
@@ -158,8 +144,6 @@
   --ring: rgba(255, 255, 255, 0.1);
   --ring-accent: rgba(165, 156, 230, 0.6);
   --portrait-shadow: drop-shadow(0 0 1px rgba(236, 232, 226, 0.18));
-  --metal: #c8c5d3;
-  --metal-env: 1.05;
   --spot: rgba(206, 200, 222, 0.1);
   --grade-edge: rgba(4, 4, 8, 0.55);
   --glass: rgba(24, 24, 27, 0.66);
@@ -168,10 +152,6 @@
   --grain-opacity: 0.085;
   --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.7);
 
-  --matte-bone: #d9d4ca;
-  --matte-dusk: #8a80c9;
-  --matte-slate: #6f7c9e;
-  --matte-graphite: #3c3c43;
 
   --tt-core-scale: 1.7;
   --tt-cut-x: 0px;
@@ -767,25 +747,71 @@ body {
   }
 }
 
-/* ---------- Phone slots ---------- */
+/* ---------- Work ---------- */
 
-.phone-fallback {
-  transition: opacity 0.8s var(--ease-soft);
+/* A row of cards: a swipeable rail on phones, a grid from tablets up. */
+.work-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(82%, 22rem);
+  gap: 1rem;
+  margin-inline: -1.25rem;
+  padding-inline: 1.25rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1.25rem;
+  scrollbar-width: none;
 }
 
-.phone-fallback[data-live="true"] {
-  opacity: 0;
+.work-rail::-webkit-scrollbar {
+  display: none;
 }
 
-.slot-glow {
-  pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(
-    closest-side,
-    color-mix(in oklab, var(--tone, var(--accent)) var(--slot-glow, 16%), transparent),
-    transparent 72%
-  );
-  transition: background 0.8s var(--ease-soft);
+.work-rail > li {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 40rem) {
+  .work-rail {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem 1.5rem;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+}
+
+@media (min-width: 64rem) {
+  .work-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem 2rem;
+  }
+}
+
+/* Each image eases in a touch while its card is hovered or focused. */
+.work-media img {
+  transition: transform 1.2s var(--ease-out-expo);
+}
+
+.group:hover .work-media img,
+.group:focus-within .work-media img {
+  transform: scale(1.035);
+}
+
+/* The kind of work, set on its image in a matte chip. */
+.work-tag {
+  position: absolute;
+  left: 0.875rem;
+  top: 0.875rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: 0.75rem;
+  color: var(--fg);
 }
 
 /* ---------- Founder ---------- */
@@ -921,39 +947,12 @@ html.lenis body {
 
 /* ---------- Closing figure ---------- */
 
-.crore-figure[data-gl="ready"] .crore-fallback {
-  opacity: 0;
-}
-
-.crore-figure canvas {
-  opacity: 0;
-  transition: opacity 0.6s var(--ease-soft);
-}
-
-.crore-figure[data-gl="ready"] canvas {
-  opacity: 1;
-}
-
-.crore-fallback {
-  transition: opacity 0.6s var(--ease-soft);
-}
-
-/* ---------- Services: expanding columns ---------- */
-
-.cap-row {
-  container-type: inline-size;
-}
-
-.cap-panel {
-  transition:
-    flex-grow 0.7s var(--ease-out-expo),
-    background-color 0.5s var(--ease-soft);
-}
-
-.cap-detail {
-  transition:
-    opacity 0.5s var(--ease-soft),
-    transform 0.7s var(--ease-out-expo);
+/* One crore, set in the display serif with a soft satin fall-off. */
+.crore-figure {
+  background: linear-gradient(180deg, var(--fg) 30%, color-mix(in oklab, var(--fg) 45%, transparent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* ---------- Enquiry form (Start a Campaign) ---------- */
@@ -1147,8 +1146,6 @@ textarea.field-input {
     transform: none;
   }
 
-  .cap-panel,
-  .cap-detail,
   .arrow-swap > *,
   .link-underline,
   .tt-core,

@@ -1,27 +1,26 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { founder, founderSection } from "@/content/site";
+import { founder, founderSection, site } from "@/content/site";
 import { asset } from "@/lib/assets";
+import { TextLink } from "@/components/ui/Button";
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
  * The founder, in her own frame: a portrait set like a story on her feed,
- * with the 3D layer's objects circling behind it, then her note, signature
- * and the way the agency works.
+ * then her note, signature and the way the agency works.
  */
 export function Founder() {
   const { image } = founder;
   const src = asset(image.src);
 
   return (
-    <section id="founder" data-stage="founder" aria-labelledby="founder-title" className="relative py-16 lg:py-28">
+    <section id="founder" aria-labelledby="founder-title" className="relative py-16 lg:py-28">
       <div className="shell grid items-center gap-x-10 gap-y-12 lg:grid-cols-12">
         {/* Portrait frame */}
         <Reveal className="lg:col-span-5">
           <figure className="relative mx-auto w-full max-w-[28rem]">
             <div
-              data-anchor="founder-frame"
               className="founder-frame relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-line"
             >
               <div aria-hidden="true" className="founder-backdrop absolute inset-0" />
@@ -124,6 +123,7 @@ export function Founder() {
                 <InstagramIcon size={16} />
                 {founderSection.follow}
               </a>
+              <TextLink href={site.about.href}>{founderSection.aboutLink}</TextLink>
             </div>
           </Reveal>
 

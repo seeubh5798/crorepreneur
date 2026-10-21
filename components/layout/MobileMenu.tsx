@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, m } from "motion/react";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { hero, site } from "@/content/site";
 import { Button } from "@/components/ui/Button";
@@ -90,6 +91,18 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   </m.a>
                 </li>
               ))}
+              <li className="overflow-hidden border-b border-line">
+                <m.div
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "40%", opacity: 0 }}
+                  transition={{ duration: 0.8, ease: EASE, delay: 0.06 + site.nav.length * 0.06 }}
+                >
+                  <Link href={site.about.href} onClick={onClose} className="display block py-5 text-[2.75rem] text-fg">
+                    {site.about.label}
+                  </Link>
+                </m.div>
+              </li>
             </ul>
           </nav>
 

@@ -22,7 +22,7 @@ export function Hero() {
   const src = asset(image.src);
 
   return (
-    <section id="top" data-stage="hero" className="cover relative isolate overflow-clip">
+    <section id="top" className="cover relative isolate overflow-clip">
       {/* ---- Visual layer: masthead, light, portrait */}
       <div className="cover-visual relative h-[76svh] min-h-[30rem] lg:absolute lg:inset-0 lg:h-auto">
         <div aria-hidden="true" data-cover-masthead className="cover-masthead absolute inset-x-0 flex justify-center">
@@ -57,13 +57,6 @@ export function Hero() {
               <span aria-hidden="true" data-cover-shade className="cover-shade absolute inset-0" />
             </div>
 
-            {/* Slots the 3D layer reads: the rings orbit her head; the phone waits at her shoulder. */}
-            <span aria-hidden="true" data-anchor="halo" className="absolute left-[14%] right-[14%] top-[6%] h-[48%]" />
-            <span
-              aria-hidden="true"
-              data-anchor="phone-hero"
-              className="absolute right-[-9%] top-[13%] aspect-[76/156] h-[27%] lg:right-[-6%] lg:top-[28%] lg:h-[34%]"
-            />
           </div>
         </div>
       </div>

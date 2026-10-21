@@ -7,19 +7,17 @@ import { Founder } from "@/components/sections/Founder";
 import { Hero } from "@/components/sections/Hero";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { Process } from "@/components/sections/Process";
-import { ProjectShowcase } from "@/components/sections/ProjectShowcase";
-import { Stage3D } from "@/components/three/Stage3D";
+import { Work } from "@/components/sections/Work";
 import { EnquiryDialog } from "@/components/ui/EnquiryDialog";
 
 export default function Home() {
   return (
     <>
-      <Stage3D />
       <Navbar />
       <main id="main" className="relative z-10 overflow-x-clip">
         <Hero />
         <Manifesto />
-        <ProjectShowcase />
+        <Work />
         <Capabilities />
         <Process />
         <Founder />

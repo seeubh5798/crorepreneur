@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Magnetic } from "./Magnetic";
@@ -47,25 +48,43 @@ type TextLinkProps = {
   children: ReactNode;
   /** "down" for links that scroll further down the page. */
   direction?: "out" | "down";
+  /** Opens another site in a new tab. */
+  external?: boolean;
   className?: string;
 };
 
-/** The secondary action: plain text, an underline that draws in, an arrow. */
-export function TextLink({ href, children, direction = "out", className }: TextLinkProps) {
+/**
+ * The secondary action: plain text, an underline that draws in, an arrow.
+ * Links to another page of the site go through Next's <Link>, so they load
+ * without a full page reload.
+ */
+export function TextLink({ href, children, direction = "out", external, className }: TextLinkProps) {
   const Icon = direction === "down" ? ArrowDown : ArrowUpRight;
-  return (
-    <a
-      href={href}
-      className={cn(
-        "arrow-host inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-medium text-fg",
-        className,
-      )}
-    >
+  const classes = cn("arrow-host inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-medium text-fg", className);
+  const content = (
+    <>
       <span className="link-underline pb-0.5">{children}</span>
       <span aria-hidden="true" className="arrow-swap" data-dir={direction === "down" ? "down" : undefined}>
         <Icon size={16} strokeWidth={1.75} />
         <Icon size={16} strokeWidth={1.75} />
       </span>
+    </>
+  );
+  if (href.startsWith("/") && !external) {
+    return (
+      <Link href={href} className={classes}>
+        {content}
+      </Link>
+    );
+  }
+  return (
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className={classes}
+    >
+      {content}
     </a>
   );
 }
