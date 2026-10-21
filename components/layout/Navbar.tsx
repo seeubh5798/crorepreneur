@@ -6,8 +6,7 @@ import { hero, site } from "@/content/site";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { ENQUIRY_FALLBACK_HREF } from "@/lib/enquiry";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { Wordmark } from "@/components/ui/Wordmark";
+import { Logo } from "@/components/ui/Logo";
 import { MobileMenu } from "./MobileMenu";
 
 const SECTION_IDS = site.nav.map((item) => item.href.slice(1));
@@ -55,7 +54,7 @@ export function Navbar() {
         data-scrolled="false"
         data-menu-open={menuOpen}
         className={cn(
-          "group/header fixed inset-x-0 top-0 z-50 border-b border-transparent pt-[env(safe-area-inset-top,0px)]",
+          "scheme-ink group/header fixed inset-x-0 top-0 z-50 border-b border-transparent bg-transparent pt-[env(safe-area-inset-top,0px)]",
           "transition-[background-color,border-color,backdrop-filter] duration-500 ease-out-expo",
           // A solid matte bar once scrolled: no backdrop blur, which would be
           // recomputed over the page and the 3D layer on every scroll frame.
@@ -72,13 +71,13 @@ export function Navbar() {
           <a
             href="#top"
             aria-label={`${site.name}, back to top`}
-            className="-ml-1 rounded-md px-1 py-2 text-[1.1875rem] text-fg"
+            className="-ml-1 shrink-0 rounded-md px-1 py-2"
             onClick={() => setMenuOpen(false)}
           >
-            <Wordmark />
+            <Logo eager className="h-7 sm:h-8" />
           </a>
 
-          <nav aria-label="Primary" className="hidden md:block">
+          <nav aria-label="Primary" className="hidden lg:block">
             <ul className="flex items-center gap-8 text-sm">
               {site.nav.map((item) => (
                 <li key={item.href}>
@@ -106,15 +105,15 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1.5 md:gap-3">
-            <ThemeToggle />
-            <div className="hidden md:block">
+            {/* From tablets up; while the menu is open, the menu's own button stands in. */}
+            <div className="hidden md:block md:group-data-[menu-open=true]/header:hidden">
               <Button href={ENQUIRY_FALLBACK_HREF} size="sm" enquiry>
                 {hero.primaryCta.label}
               </Button>
             </div>
             <button
               type="button"
-              className="relative grid size-11 place-items-center rounded-full text-fg md:hidden"
+              className="relative grid size-11 place-items-center rounded-full text-fg lg:hidden"
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-label={menuOpen ? "Close menu" : "Open menu"}

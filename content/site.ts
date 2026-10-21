@@ -8,8 +8,6 @@
 
 export const site = {
   name: "Crorepreneur",
-  /** The wordmark is set in two voices: a serif "Crore" and a sans "preneur". */
-  wordmark: { lead: "Crore", tail: "preneur" },
   title: "Crorepreneur | Influencer marketing on Instagram, by Chabi Gupta",
   description:
     "Crorepreneur is an Instagram influencer marketing agency founded by Chabi Gupta. We match brands with creators their customers trust, produce content people stop for, and track what it earns.",
@@ -38,43 +36,64 @@ export const founder = {
   name: "Chabi Gupta",
   firstName: "Chabi",
   role: "Founder, Crorepreneur",
+  /** Shown on her name card on the cover, one per line. */
+  credentials: ["Forbes India Top 100 Digital Star", "MBA, Kelley School of Business"],
   instagram: { handle: "@chabigupta", user: "chabigupta", href: "https://www.instagram.com/chabigupta/" },
   image: {
     /**
      * Replace this one file to swap the portrait: /public/images/founder.webp
-     * It is a transparent cutout (WebP with alpha), about 830 x 1250. It is a
-     * studio-style AI edit of her photo (styling, tailoring, light); her face is
-     * the original photograph. The unedited cutout is kept, unpublished, at
-     * /design/founder-original.webp.
+     * It is her studio headshot as a transparent cutout (WebP with alpha),
+     * 1323 x 1037, with the photo's starry backdrop removed so she sits on the
+     * site's own backdrops. Nothing else is retouched. The source photo is
+     * kept, unpublished, at /design/founder-studio.jpg.
      */
     src: "/images/founder.webp",
-    alt: "Chabi Gupta, founder of Crorepreneur, smiling, in a tailored black blazer",
+    alt: "Chabi Gupta, founder of Crorepreneur, smiling, in a tartan blazer with black satin lapels, a white shirt and a black bow",
     /** Width divided by height of the photo file. Update if the photo changes shape. */
-    aspect: 830 / 1250,
-    /** Where the portrait fades out at the bottom, as fractions of its height. */
-    fade: [0.58, 0.92] as [number, number],
-    /** Soft fade at the left and right edges, where the photo crops the sleeves. */
-    sideFade: 0.14,
+    aspect: 1323 / 1037,
+    /** Soft fade at the left and right edges, where the photo crops the shoulders. */
+    sideFade: 0.12,
     /** Crop for the small round avatar. */
-    avatar: { scale: 2.1, position: "50% 16%" },
+    avatar: { scale: 1.9, position: "50% 30%" },
   },
 };
 
 export const hero = {
-  /** Three short lines, set like magazine cover lines. */
-  headline: ["Creators.", "Culture.", "Crores."],
-  body: "An Instagram influencer marketing agency. We match brands with the creators their customers already trust, and turn those posts into revenue.",
+  /** Set in spaced capitals above the headline. */
+  eyebrow: "Your growth marketing partner",
+  /** Three short lines that type themselves on a loop. */
+  headline: ["Buzz.", "Trust.", "Revenue."],
+  body: "Your creator-first, culture-forward growth marketing partner. We build campaigns that get your city talking, turn attention into trust, and turn that trust into loyal customers and measurable revenue growth.",
+  /** The words in `body` picked out with a violet stroke. */
+  bodyHighlight: "growth marketing partner",
   /** Opens the enquiry form (see `enquiry` below). */
-  primaryCta: { label: "Start a Campaign" },
+  primaryCta: { label: "Let’s Grow Your Brand" },
   secondaryCta: { label: "See the work", href: "#work" },
-  coverLines: ["Hyperlocal campaigns", "Local-language creators", "City-by-city rollouts"],
+  /** Who the work has been for, on a loop along the bottom of the cover. */
+  clientsLabel: "Brands we have worked with",
+  clients: [
+    "Netflix India",
+    "ITC Sunrise",
+    "Horlicks",
+    "Jharkhand Tourism",
+    "Big Bazaar",
+    "Microsoft",
+    "Ecolab",
+    "Ben Olive Mill",
+  ],
 } as const;
 
 export const manifesto = {
+  label: "Why Crorepreneur",
+  /** Set large: the first line struck through, the second in the serif voice. */
+  headline: ["Ads get skipped.", "Stories get shared."],
   /** Lights up word by word as it scrolls past. */
-  statement:
-    "Attention is cheap. Influence is earned. We find the creators your customers already follow, give them a story worth telling, and put spend behind the posts that sell.",
-  body: "One team runs it end to end: discovery, briefs, contracts, content, paid amplification and reporting, measured in revenue rather than reach.",
+  statement: "We don’t make content people scroll past. We make moments people talk about.",
+  body: "Every campaign starts with your customer: what they care about, who they trust, and what moves them. Then we put the right creators behind the right story and keep the city talking.",
+  closing: {
+    lead: "One team, end to end.",
+    text: "The result is a brand people believe in, choose and keep coming back to.",
+  },
   categoriesLabel: "Creators we work with",
   categories: ["Beauty", "Fashion", "Food", "Travel", "Tech", "Finance", "Fitness", "Parenting", "Gaming", "Home"],
 } as const;
@@ -111,8 +130,17 @@ export type CaseStudy = {
 };
 
 export const work = {
+  label: "Work",
   title: "Selected work",
-  intro: "Campaigns made with creators for brands, a state tourism board and local retail, and the strategy behind them.",
+  /** The rail of cases and its buttons. */
+  railLabel: "Case studies",
+  prev: "Previous case",
+  next: "Next case",
+  /** The screen before the cases: the numbers beside the press. */
+  proofLabel: "Track record",
+  proofTitle: "The work, in numbers",
+  intro:
+    "Campaigns made with creators for brands, a state tourism board and local retail, and the strategy behind them.",
   /** Counted up as they scroll into view. */
   highlights: [
     { value: 177, suffix: "K", label: "Followers on @yourregularmom" },
@@ -128,7 +156,11 @@ export const work = {
     title: "Maa Behen, launched by a real mother and daughter",
     summary:
       "For the release of Maa Behen, Chabi and her mother Anita joined Madhuri Dixit, Tripti Dimri and Dharna Durga on the film's press set and did what @yourregularmom does best: swap desi mum stories in their own dialect. A meme cold open, a skit with the cast, and one clear line to close: now streaming on Netflix.",
-    facts: ["With Madhuri Dixit, Tripti Dimri and Dharna Durga", "Shot on the film's press set", "Posted on @yourregularmom"],
+    facts: [
+      "With Madhuri Dixit, Tripti Dimri and Dharna Durga",
+      "Shot on the film's press set",
+      "Posted on @yourregularmom",
+    ],
     stats: [
       { figure: "3,157", label: "likes" },
       { figure: "89", label: "comments" },
@@ -155,7 +187,11 @@ export const work = {
         { figure: "12,592", label: "likes" },
         { figure: "22", label: "comments" },
       ],
-      image: { src: "/images/work/sunrise-chhath.webp", alt: "Anita Gupta in an orange saree, preparing for Chhath", position: "50% 38%" },
+      image: {
+        src: "/images/work/sunrise-chhath.webp",
+        alt: "Anita Gupta in an orange saree, preparing for Chhath",
+        position: "50% 38%",
+      },
       link: { label: "Watch the reel", href: "https://www.instagram.com/reel/DQMbSL9kqRK/" },
     },
     {
@@ -204,7 +240,10 @@ export const work = {
       summary:
         "A new luxury flagship was putting off the tier-2 shoppers who built the brand. A SWOT analysis pointed back to its local roots: well-loved local faces, stories tied to regional traditions, and a message that it was still for them, on regional TV, in cinemas, in local papers and on billboards across the city.",
       stats: [{ figure: "50x", label: "store footfall within a month" }],
-      image: { src: "/images/work/jewellery-jharkhand.webp", alt: "A mother and daughter laughing together in a jewellery showroom" },
+      image: {
+        src: "/images/work/jewellery-jharkhand.webp",
+        alt: "A mother and daughter laughing together in a jewellery showroom",
+      },
       link: {
         label: "Read the case study",
         href: "https://www.linkedin.com/posts/chabi-gupta-cg_marketingstrategy-swotanalysis-retailconsulting-ugcPost-7301859308042874880-gDep/",
@@ -246,6 +285,8 @@ export const work = {
   ] satisfies CaseStudy[],
   /** The page it started on. Follower and post counts as of October 2026. */
   channel: {
+    kind: "Our own page",
+    date: "Since 2020",
     handle: "@yourregularmom",
     names: "Anita Gupta & Chabi Gupta",
     title: "The page where it started",
@@ -256,11 +297,16 @@ export const work = {
       { figure: "867", label: "posts" },
       { figure: "35M", label: "views on the best reel" },
     ],
-    image: { src: "/images/work/yourregularmom.webp", alt: "Chabi Gupta laughing beside her mother, Anita, who wears a yellow saree" },
+    image: {
+      src: "/images/work/yourregularmom.webp",
+      alt: "Chabi Gupta laughing beside her mother, Anita, who wears a yellow saree",
+    },
     link: { label: "Follow on Instagram", href: "https://www.instagram.com/yourregularmom/" },
   },
   press: {
+    label: "As featured in",
     outlet: "Forbes India",
+    honour: "Top 100 Digital Stars, 2022",
     date: "July 2022",
     headline: "From Bihari to Kashmiri, the rise and rise of regional Indian digital content stars",
     quote:
@@ -275,62 +321,102 @@ export const work = {
 
 /** The one service: hyperlocal creator campaigns, for companies running campaigns. */
 export const capabilities = {
+  label: "Services",
   title: "What we do",
   intro: "One service, done properly: creator campaigns that sound local in every city they run in.",
   offering: {
     name: "Hyperlocal Campaigns",
     statement: "Speak like the city you sell to.",
-    body: "For companies running campaigns across India. We cast creators from the cities you want to reach, in their own language and dialect, and build the campaign around what their audience talks about at home: family, food, festivals, the neighbourhood. One brief, and every city hears it in its own words.",
+    body: "For global brands coming to India, and Indian brands going everywhere else. We cast creators from the cities you want to reach, in their own language and dialect, and build the campaign around what their audience talks about at home: family, food, festivals, the neighbourhood. One brief, and every market hears it in its own words.",
     includesLabel: "What a campaign includes",
     includes: [
       "Creators cast city by city, by language, dialect and audience",
       "Scripts and skits rooted in local life, written with the creators",
       "Shoots at home, on location, or at your launch, premiere or event",
-      "Rollout across cities, with partnership ads behind what works",
+      "Rollout across cities and countries, with partnership ads behind what works",
       "Reporting city by city, through to sales",
     ],
     madeForLabel: "Made for",
-    madeFor: ["Film and OTT releases", "Product launches", "Store and restaurant openings", "Festive campaigns", "Regional rollouts"],
+    madeFor: [
+      "Film and OTT releases",
+      "Product launches",
+      "Store and restaurant openings",
+      "Festive campaigns",
+      "Market entry",
+    ],
   },
 } as const;
 
 export const process = {
-  title: ["Find.", "Brief.", "Create.", "Amplify."],
-  intro: "The same four moves on every campaign, in this order. Skipping one is how budgets get wasted.",
-  chart: {
-    axisLabel: "Campaign views, log scale",
-    ticks: ["1 L", "10 L", "1 Cr"],
-    markLabel: "The crore mark",
-    note: "Illustrative curve. Every campaign draws its own.",
-  },
+  label: "Approach",
+  /** The last word is said in the serif voice. */
+  title: ["Listen.", "Spark.", "Create.", "Amplify.", "Compound."],
+  intro: "Five moves on every campaign, always in this order. Skip one and the budget leaks.",
   steps: [
     {
-      name: "Find",
-      text: "Shortlist creators by audience fit, real engagement and past results, not follower count.",
+      id: "listen",
+      name: "Listen",
+      lead: "Learn what your audience watches, saves, shares and keeps coming back to.",
+      points: [
+        "Dig into comments, saves and search trends, not just follower counts",
+        "Find what makes them sticky: the jokes, fears, habits and local pride",
+        "Map the creators they already trust, city by city",
+      ],
     },
     {
-      name: "Brief",
-      text: "Give each creator one clear story and the freedom to tell it in their own voice.",
+      id: "spark",
+      name: "Spark",
+      lead: "Turn that data into one insight worth talking about.",
+      points: [
+        "Find the tension your brand can solve better than anyone",
+        "Shape one story that people feel before they understand it",
+        "Pick creators whose voice makes that story believable",
+      ],
     },
     {
+      id: "create",
       name: "Create",
-      text: "Produce Reels and UGC with them, reviewed against the brief before anything goes live.",
+      lead: "Make content with creators that feels made for the feed, not for an ad break.",
+      points: [
+        "Reels and UGC in the creator’s own voice and language",
+        "Every piece checked against the brief before it goes live",
+        "Real formats for each platform",
+      ],
     },
     {
+      id: "amplify",
       name: "Amplify",
-      text: "Put spend behind the posts that perform and track every rupee through to sales.",
+      lead: "Keep the buzz going across creators, cities and paid media.",
+      points: [
+        "Put spend behind the posts that already work",
+        "Roll out in sequence so the conversation never goes quiet",
+        "Make online buzz show up offline, in stores, events and word of mouth",
+      ],
+    },
+    {
+      id: "compound",
+      name: "Compound",
+      lead: "Track every rupee to sales, then make the next campaign smarter.",
+      points: [
+        "Measure revenue, repeat buyers and brand love, not just reach",
+        "Learn what moved people and feed it into the next round",
+        "Each campaign starts higher than the last",
+      ],
     },
   ],
+  /** Under the staircase. */
+  note: "The graphs are illustrations, not data. Every campaign draws its own.",
 } as const;
 
 export const founderSection = {
+  label: "Founder",
   title: "Meet Chabi.",
   /** Her own words, from LinkedIn (June 2026). */
   quote:
     "I didn't get this collaboration because I had the biggest numbers in the room. I got it because I had the most specific story in the room.",
   bio: [
-    "Chabi grew up in Jharkhand and built @yourregularmom with her mother from a town most marketers overlook: 177K followers, a Forbes India Top 100 Digital Star, and campaigns for Netflix, ITC and Horlicks.",
-    "She brings an MBA from Indiana University's Kelley School of Business, and consulting work for Microsoft, Ecolab and a Jharkhand jeweller, to every brief.",
+    "Chabi built @yourregularmom with her mother from nothing: 177K followers, a Forbes India Top 100 Digital Star, and campaigns for Netflix, ITC and Horlicks.",
+    "She brings an MBA from Indiana University's Kelley School of Business in the US, and strategy work for Microsoft and Ecolab, to every brief.",
   ],
   aboutLink: "Read our story",
   follow: "Follow on Instagram",
@@ -345,10 +431,10 @@ export const cta = {
   figure: "1,00,00,000",
   headline: ["Your next crore", "starts with", "one post."],
   body: "Tell us about the brand and where it needs to be. You will hear back within two working days.",
-  button: "Start a Campaign",
+  button: "Let’s Grow Your Brand",
 } as const;
 
-/** The "Start a Campaign" form. Every button with that label opens it. */
+/** The "Start a campaign" form. Every "Let’s Grow Your Brand" button opens it. */
 export const enquiry = {
   title: "Start a campaign",
   intro: "Tell us about the brand and where it needs to be. You will hear back within two working days.",
@@ -357,7 +443,7 @@ export const enquiry = {
     email: { label: "Work email", placeholder: "you@brand.com" },
     company: { label: "Brand or company", placeholder: "Brand name" },
     website: { label: "Website or Instagram", placeholder: "brand.com or @brand" },
-    cities: { label: "Cities or regions", placeholder: "Ranchi, Patna, all of Jharkhand…" },
+    cities: { label: "Cities or markets", placeholder: "Mumbai, Delhi, the US, the UK…" },
     phone: { label: "Phone or WhatsApp", placeholder: "+91" },
     message: {
       label: "About the campaign",
@@ -389,111 +475,73 @@ export const enquiry = {
 } as const;
 
 /**
- * The About page (/about). Facts from the founders' LinkedIn profiles and
- * posts, and from Forbes India, as of October 2026.
+ * The About page (/about): who we work with, the founder, the tech behind
+ * Crorepreneur and what we believe. Facts from the founders' LinkedIn
+ * profiles and posts, as of October 2026.
  */
 export const about = {
   title: "About us",
   description:
-    "Crorepreneur is a hyperlocal creator marketing agency with its roots in Ranchi, founded by Chabi Gupta, with Shubham Kumar Agrawal behind its technology.",
+    "Crorepreneur is a creator marketing agency for global brands coming to India and Indian brands going everywhere else, founded by Chabi Gupta.",
   back: "Back to home",
   backShort: "Back",
   headline: ["Stop chasing reach.", "Chase resonance."],
   headlineBy: "Chabi Gupta, founder",
   intro:
-    "Crorepreneur is a hyperlocal creator marketing agency with its roots in Ranchi, Jharkhand. We make campaigns in the languages, cultures and places that mainstream media called too niche to matter, and we keep finding what our audience knew all along: niche is just another word for loyal.",
-  storyTitle: "How we got here",
-  storyIntro: "From a family comedy page in Ranchi to campaigns for Netflix, ITC and a state tourism board.",
-  story: [
+    "Crorepreneur gets brands talked about by the creators people already trust. We work in two directions: global brands that want to win in India, and Indian brands that want to be known everywhere else. Our team works across the US and India, so we know both sides.",
+  audienceLabel: "Who we work with",
+  audienceTitle: "Built for brands that cross borders.",
+  audiences: [
     {
-      year: "2020",
-      title: "@yourregularmom begins",
-      text: "Chabi starts a page with her mother, Anita: family comedy in Bihari, filmed at home in Ranchi.",
+      id: "into-india",
+      direction: "Into India",
+      title: "Global brands coming to India",
+      text: "Launching in India, or growing there? We match you with the Indian creators your customers already follow, in the languages they speak, and turn their posts into sales.",
     },
     {
-      year: "2022",
-      title: "Forbes India's Top 100 Digital Stars",
-      text: "A reel about a Gucci belt passes 4 million views, and Forbes India features the duo among the regional creators who put language and culture first.",
-    },
-    {
-      year: "2024",
-      title: "An MBA from Kelley",
-      text: "Chabi completes her MBA at Indiana University's Kelley School of Business, with consulting projects for Microsoft, Ecolab and Ben Olive Mill.",
-    },
-    {
-      year: "2025",
-      title: "Campaigns at home",
-      text: "Kuch Naya Sochte Hai lifts a Jharkhand jeweller's footfall 50x in a month, campaigns for ITC Sunrise and Horlicks follow, and Tata Steel invites Chabi to speak on International Women's Day.",
-    },
-    {
-      year: "2026",
-      title: "Netflix, and Jharkhand Tourism",
-      text: "Maa Behen with Madhuri Dixit, for a film that reached No. 2 on Netflix's global Top 10 for non-English films, and a seat at Jharkhand's first State Level Influencer Meet.",
+      id: "out-of-india",
+      direction: "Out of India",
+      title: "Indian brands going global",
+      text: "Taking an Indian brand to the US, or anywhere else? We find the creators in the markets you want, and tell your story in a way those audiences recognise.",
     },
   ],
-  teamTitle: "The people behind it",
-  teamIntro: "A marketer who built her audience from a town in Jharkhand, and an engineer who builds what runs underneath.",
-  team: [
-    {
-      id: "chabi",
-      name: "Chabi Gupta",
-      role: "Founder",
-      line: "Strategy, creators and every campaign.",
-      /** The headline credential, shown beside the name. */
-      badge: "MBA, Kelley School of Business",
-      image: {
-        src: "/images/founder.webp",
-        alt: "Chabi Gupta, smiling, in a tailored black blazer",
-        /** Width divided by height of the cutout. */
-        aspect: 830 / 1250,
-        /** Height of the figure and where its top sits, as shares of the frame's height. */
-        height: 1.3,
-        top: 0.24,
-        /** How far in from each side the figure fades, as a share of its width. */
-        sideFade: 0.06,
-      },
-      bio: [
-        "Chabi grew up in Jharkhand, the daughter of a forest department officer. Her career ran from engineering to analytics and product management, at Sabre, Gametion and BYJU'S, before it found marketing.",
-        "In 2020 she started @yourregularmom with her mother. It has grown to 177K followers, its best reel has passed 35 million views, and it put her among Forbes India's Top 100 Digital Stars. Along the way she took an MBA at Indiana University's Kelley School of Business.",
-      ],
-      credentials: [
-        "MBA, Kelley School of Business, Indiana University",
-        "Forbes India Top 100 Digital Star",
-        "Creator of @yourregularmom, 177K followers",
-        "Formerly at Sabre, Gametion and BYJU'S",
-      ],
-      links: [
-        { label: "LinkedIn", href: "https://www.linkedin.com/in/chabi-gupta-cg/" },
-        { label: "Instagram", href: "https://www.instagram.com/chabigupta/" },
-      ],
+  brandsLabel: "Brands we have worked with",
+  brands: ["Netflix India", "ITC Sunrise", "Horlicks", "Microsoft", "Big Bazaar", "Ecolab"],
+  founderLabel: "The founder",
+  founder: {
+    id: "chabi",
+    name: "Chabi Gupta",
+    role: "Founder · Strategy behind Crorepreneur",
+    /** The headline credential, shown on the photo. */
+    badge: "MBA, Kelley School of Business",
+    image: {
+      src: "/images/founder.webp",
+      alt: "Chabi Gupta, smiling, in a tartan blazer with black satin lapels, a white shirt and a black bow",
+      /** Width divided by height of the cutout. */
+      aspect: 1323 / 1037,
+      /** Height of the figure and where its top sits, as shares of the frame's height. */
+      height: 0.68,
+      top: 0.32,
+      /** How far in from each side the figure fades, as a share of its width. */
+      sideFade: 0.1,
     },
-    {
-      id: "shubham",
-      name: "Shubham Kumar Agrawal",
-      role: "Technology",
-      line: "The tech behind Crorepreneur's products and offerings.",
-      badge: "IIT Bhubaneswar",
-      image: {
-        src: "/images/team/shubham.webp",
-        alt: "Shubham Kumar Agrawal in glasses, a dark suit and a navy tie",
-        aspect: 400 / 384,
-        height: 0.62,
-        top: 0.25,
-        sideFade: 0.16,
-      },
-      bio: [
-        "Shubham builds the technology behind Crorepreneur's products and offerings. An IIT Bhubaneswar graduate, he has spent over four years building full-stack products, most recently as a lead full-stack engineer.",
-        "He likes fast, simple systems and knowing why they are fast: Node.js and Go on the server; Redis, PostgreSQL and PostGIS for data; and an eye on what the hardware underneath is doing.",
-      ],
-      credentials: [
-        "IIT Bhubaneswar, 2017–2021",
-        "MCM Scholarship, Government of India, 2018–2020",
-        "Winner, Unconference at E-Summit 2019, IIT Madras",
-        "CodeChef 4 star, rated 1884",
-      ],
-      links: [{ label: "LinkedIn", href: "https://www.linkedin.com/in/shubham-kumar-agrawal-45311b171/" }],
-    },
-  ],
+    bio: [
+      "Chabi started Crorepreneur after building an audience of her own from nothing: a page she made with her mother grew to 177K followers, and its best reel passed 35 million views.",
+      "She took her MBA at Indiana University's Kelley School of Business in the US, and has worked with Netflix, ITC and Horlicks on campaigns and with Microsoft on strategy. She works between Chicago and India.",
+    ],
+    links: [
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/chabi-gupta-cg/" },
+      { label: "Instagram", href: "https://www.instagram.com/chabigupta/" },
+    ],
+  },
+  /** A short note, without a photo, before the beliefs. */
+  tech: {
+    label: "Tech behind Crorepreneur",
+    name: "Shubham Kumar Agrawal",
+    text: "An engineer from IIT Bhubaneswar, Shubham builds the products and tools behind Crorepreneur's campaigns.",
+    link: { label: "LinkedIn", href: "https://www.linkedin.com/in/shubham-kumar-agrawal-45311b171/" },
+  },
+  beliefsLabel: "Beliefs",
   beliefsTitle: "What we believe",
   beliefs: [
     {
@@ -509,10 +557,11 @@ export const about = {
       text: "Netflix did not need another influencer. They needed something real: a mother, a daughter, and a dynamic that cannot be manufactured.",
     },
     {
-      title: "Most places have a story problem.",
-      text: "Jharkhand doesn't have a tourism problem. It has a storytelling problem. The destinations are already here; the story just hasn't caught up.",
+      title: "Local beats global, everywhere.",
+      text: "People trust voices that sound like home. That holds in Mumbai, in Chicago and everywhere in between.",
     },
   ],
   ctaTitle: "Have a story worth telling?",
-  ctaBody: "Tell us about the brand and the cities you want to reach. You will hear back within two working days.",
+  ctaBody:
+    "Tell us about the brand and the markets you want to reach, in India or anywhere else. You will hear back within two working days.",
 } as const;

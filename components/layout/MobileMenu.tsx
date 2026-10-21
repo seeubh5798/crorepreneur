@@ -19,7 +19,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   // While open: lock the page behind, close on Escape, and close if the
-  // window grows past the mobile breakpoint.
+  // window grows wide enough for the full navigation.
   useEffect(() => {
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
@@ -29,7 +29,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
-    const desktop = window.matchMedia("(min-width: 48rem)");
+    const desktop = window.matchMedia("(min-width: 64rem)");
     const onResize = () => {
       if (desktop.matches) onClose();
     };
@@ -55,7 +55,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="fixed inset-0 z-40 flex flex-col bg-bg md:hidden"
+          className="scheme-ink fixed inset-0 z-40 flex flex-col lg:hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

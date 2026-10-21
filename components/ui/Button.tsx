@@ -7,7 +7,8 @@ import { Magnetic } from "./Magnetic";
 type ButtonProps = {
   href: string;
   children: ReactNode;
-  size?: "md" | "sm";
+  /** "lg" is the big version a page closes on. */
+  size?: "md" | "sm" | "lg";
   /** Opens the "Start a Campaign" form (EnquiryDialog) instead of following the link. */
   enquiry?: boolean;
   className?: string;
@@ -16,6 +17,7 @@ type ButtonProps = {
 /** The primary call to action: a solid matte pill with an accent arrow. */
 export function Button({ href, children, size = "md", enquiry, className }: ButtonProps) {
   const small = size === "sm";
+  const large = size === "lg";
   return (
     <Magnetic>
       <a
@@ -24,18 +26,25 @@ export function Button({ href, children, size = "md", enquiry, className }: Butt
         className={cn(
           "matte-pill arrow-host group inline-flex items-center rounded-full bg-fg font-medium text-bg",
           "transition-[box-shadow,background-color] duration-500 ease-out-expo",
-          small ? "h-10 gap-2.5 pl-4 pr-1.5 text-sm" : "h-13 gap-3.5 pl-6 pr-2 text-[0.9375rem]",
+          small
+            ? "h-10 gap-2.5 pl-4 pr-1.5 text-sm"
+            : large
+              ? "h-16 gap-5 pl-8 pr-2.5 text-[1.1875rem] sm:h-[4.5rem] sm:pl-9 sm:text-[1.3125rem]"
+              : "h-13 gap-3.5 pl-6 pr-2 text-[0.9375rem]",
           className,
         )}
       >
         <span className="whitespace-nowrap">{children}</span>
         <span
           aria-hidden="true"
-          className={cn("grid place-items-center rounded-full bg-accent text-on-accent", small ? "size-7" : "size-9")}
+          className={cn(
+            "grid place-items-center rounded-full bg-accent text-on-accent",
+            small ? "size-7" : large ? "size-11 sm:size-[3.25rem]" : "size-9",
+          )}
         >
           <span className="arrow-swap">
-            <ArrowUpRight size={small ? 14 : 16} strokeWidth={2} />
-            <ArrowUpRight size={small ? 14 : 16} strokeWidth={2} />
+            <ArrowUpRight size={small ? 14 : large ? 20 : 16} strokeWidth={2} />
+            <ArrowUpRight size={small ? 14 : large ? 20 : 16} strokeWidth={2} />
           </span>
         </span>
       </a>
@@ -60,7 +69,10 @@ type TextLinkProps = {
  */
 export function TextLink({ href, children, direction = "out", external, className }: TextLinkProps) {
   const Icon = direction === "down" ? ArrowDown : ArrowUpRight;
-  const classes = cn("arrow-host inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-medium text-fg", className);
+  const classes = cn(
+    "arrow-host inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-medium text-fg",
+    className,
+  );
   const content = (
     <>
       <span className="link-underline pb-0.5">{children}</span>

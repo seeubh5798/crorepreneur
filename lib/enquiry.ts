@@ -7,15 +7,15 @@ export type Enquiry = {
   company: string;
   website: string;
   phone: string;
-  /** Where the campaign should run. */
+  /** Where the campaign should run: cities, regions or countries. */
   cities: string;
   budget: string;
   message: string;
 };
 
 /**
- * Where the "Start a Campaign" buttons point. With script they open the form
- * instead; without it they still reach the inbox.
+ * Where the "Let’s Grow Your Brand" buttons point. With script they open the
+ * form instead; without it they still reach the inbox.
  */
 export const ENQUIRY_FALLBACK_HREF = `mailto:${site.contact.email}?subject=${encodeURIComponent(site.contact.subject)}`;
 
@@ -27,7 +27,7 @@ export function formatEnquiry(enquiry: Enquiry): string {
     `Brand: ${enquiry.company}`,
     enquiry.website && `Website / Instagram: ${enquiry.website}`,
     enquiry.phone && `Phone / WhatsApp: ${enquiry.phone}`,
-    enquiry.cities && `Cities or regions: ${enquiry.cities}`,
+    enquiry.cities && `Cities or markets: ${enquiry.cities}`,
     enquiry.budget && `Monthly budget: ${enquiry.budget}`,
   ].filter(Boolean);
   return enquiry.message ? `${details.join("\n")}\n\n${enquiry.message}` : details.join("\n");

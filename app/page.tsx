@@ -7,6 +7,7 @@ import { Founder } from "@/components/sections/Founder";
 import { Hero } from "@/components/sections/Hero";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { Process } from "@/components/sections/Process";
+import { Proof } from "@/components/sections/Proof";
 import { Work } from "@/components/sections/Work";
 import { EnquiryDialog } from "@/components/ui/EnquiryDialog";
 
@@ -17,6 +18,7 @@ export default function Home() {
       <main id="main" className="relative z-10 overflow-x-clip">
         <Hero />
         <Manifesto />
+        <Proof />
         <Work />
         <Capabilities />
         <Process />

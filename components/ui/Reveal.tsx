@@ -34,10 +34,16 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
           observer.disconnect();
         }
       },
-      { rootMargin: "0px 0px -10% 0px" },
+      // The zone runs far above the screen, so a block that is scrolled past
+      // too quickly to be seen (a fling, a jump to a section) still shows.
+      { rootMargin: "100000px 0px -10% 0px" },
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      // Never leave a block hidden with nothing left to show it.
+      if (el.dataset.reveal === "hidden") delete el.dataset.reveal;
+    };
   }, []);
 
   return (

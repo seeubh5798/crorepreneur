@@ -17,7 +17,7 @@ const FOLD = 0.9;
  *
  * - smooth, weighted scrolling on mouse and trackpad (Lenis), off for touch
  *   and for visitors who prefer reduced motion;
- * - the cover sinking into the dark as it scrolls away;
+ * - the cover easing away as it scrolls off;
  * - the manifesto lighting up word by word.
  */
 export function ScrollStory() {
@@ -45,14 +45,12 @@ export function ScrollStory() {
   useGSAP(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // The cover sinks into the dark as it scrolls away.
+    // As the cover scrolls away, she sinks a little and the copy lifts off.
     const cover = document.getElementById("top");
     if (cover) {
       gsap
         .timeline({ scrollTrigger: { trigger: cover, start: "top top", end: "bottom top", scrub: true } })
-        .to("[data-cover-portrait]", { yPercent: 12, scale: 0.92, ease: "none" }, 0)
-        .to("[data-cover-shade]", { opacity: 1, ease: "none" }, 0)
-        .to("[data-cover-masthead]", { yPercent: -45, opacity: 0.1, ease: "none" }, 0)
+        .to("[data-cover-portrait]", { yPercent: 10, scale: 0.94, ease: "none" }, 0)
         .to("[data-cover-copy]", { y: -80, opacity: 0, ease: "power1.in" }, 0);
     }
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { site } from "@/content/site";
-import { Wordmark } from "@/components/ui/Wordmark";
+import { LogoFull } from "@/components/ui/Logo";
 
 /** Year the copyright line shows. Update here when it changes. */
 const COPYRIGHT_YEAR = 2026;
@@ -11,11 +11,15 @@ export function Footer({ onHome = true }: { onHome?: boolean }) {
   const base = onHome ? "" : "/";
 
   return (
-    <footer className="border-t border-line">
-      <div className="shell flex flex-col gap-6 py-8 text-sm text-fg-2 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-5">
-          <a href={`${base}#top`} aria-label={onHome ? `${site.name}, back to top` : `${site.name}, home`} className="text-base text-fg">
-            <Wordmark />
+    <footer className="scheme-ink border-t border-line">
+      <div className="shell flex flex-col gap-8 py-10 text-sm text-fg-2 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-5">
+          <a
+            href={`${base}#top`}
+            aria-label={onHome ? `${site.name}, back to top` : `${site.name}, home`}
+            className="w-fit"
+          >
+            <LogoFull />
           </a>
           <p>
             © {COPYRIGHT_YEAR} {site.name}. All rights reserved.
@@ -26,14 +30,20 @@ export function Footer({ onHome = true }: { onHome?: boolean }) {
           <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {site.nav.map((item) => (
               <li key={item.href}>
-                <a href={`${base}${item.href}`} className="link-underline py-2 transition-colors duration-300 hover:text-fg">
+                <a
+                  href={`${base}${item.href}`}
+                  className="link-underline py-2 transition-colors duration-300 hover:text-fg"
+                >
                   {item.label}
                 </a>
               </li>
             ))}
             {onHome && (
               <li>
-                <Link href={site.about.href} className="link-underline py-2 transition-colors duration-300 hover:text-fg">
+                <Link
+                  href={site.about.href}
+                  className="link-underline py-2 transition-colors duration-300 hover:text-fg"
+                >
                   {site.about.label}
                 </Link>
               </li>

@@ -3,8 +3,8 @@ import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import { Cursor } from "@/components/ui/Cursor";
 import { MotionProvider } from "@/components/ui/MotionProvider";
+import { ScrollReset } from "@/components/ui/ScrollReset";
 import { site } from "@/content/site";
-import { themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
 // Both typefaces are self-hosted (SIL Open Font License, see app/fonts), so
@@ -37,19 +37,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f1ed" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0c" },
-  ],
+  // The header and the cover are dark, so the browser's own bar matches them.
+  themeColor: "#0a0a0c",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${instrumentSerif.variable} antialiased`} suppressHydrationWarning>
-      <head>
-        {/* Applies a stored theme choice before first paint, so there is no flash. */}
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
+    <html lang="en" className={`${geist.variable} ${instrumentSerif.variable} antialiased`}>
       <body>
         <a
           href="#main"
@@ -58,6 +52,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           Skip to content
         </a>
         <MotionProvider>{children}</MotionProvider>
+        <ScrollReset />
         <div aria-hidden="true" className="grain" />
         <Cursor />
       </body>
