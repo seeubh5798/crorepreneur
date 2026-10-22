@@ -10,8 +10,8 @@ import { BackLink } from "./BackLink";
 
 /**
  * The About page: Chabi's line on resonance, the two kinds of brands we work
- * with, the founder (with the tech behind Crorepreneur in a short note under
- * her), what we believe, and the way to start a campaign.
+ * with, the founder, the tech behind Crorepreneur in a band under her, what
+ * we believe, and the way to start a campaign.
  */
 export function AboutSections() {
   return (
@@ -19,6 +19,7 @@ export function AboutSections() {
       <Opening />
       <Audiences />
       <Founder />
+      <Tech />
       <Beliefs />
       <Close />
     </>
@@ -171,7 +172,6 @@ function Founder() {
                 </TextLink>
               ))}
             </div>
-            <Tech />
           </Reveal>
         </div>
       </div>
@@ -179,25 +179,32 @@ function Founder() {
   );
 }
 
-/** The tech behind Crorepreneur: a short note under hers, without a photo. */
+/**
+ * The tech behind Crorepreneur: a slim band under her section, without a
+ * photo. Not a full screen, so her section stays hers.
+ */
 function Tech() {
   const { tech } = about;
   return (
-    <aside
+    <section
       aria-labelledby="tech-name"
-      className="mt-10 max-w-[34rem] border-t border-line pt-6 lg:mt-[min(2.5rem,4svh)]"
+      className="scheme-dark relative border-t border-line py-16 lg:py-[min(4.5rem,8svh)]"
     >
-      <p className="text-sm font-medium text-accent-text">{tech.label}</p>
-      <h3 id="tech-name" className="display mt-2 text-[1.375rem] leading-tight text-fg">
-        {tech.name}
-      </h3>
-      <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-        <p className="text-[0.9375rem] leading-[1.6] text-fg-2">{tech.text}</p>
-        <TextLink href={tech.link.href} external className="shrink-0">
-          {tech.link.label}
-        </TextLink>
+      <div className="shell grid gap-x-12 gap-y-6 lg:grid-cols-12">
+        <Reveal className="lg:col-span-4">
+          <p className="section-label">{tech.label}</p>
+          <h2 id="tech-name" className="display mt-6 text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.05] text-fg">
+            {tech.name}
+          </h2>
+          <TextLink href={tech.link.href} external className="mt-4">
+            {tech.link.label}
+          </TextLink>
+        </Reveal>
+        <Reveal delay={80} className="lg:col-span-7 lg:col-start-6">
+          <p className="max-w-[44rem] text-[1.0625rem] leading-[1.7] text-fg-2">{tech.text}</p>
+        </Reveal>
       </div>
-    </aside>
+    </section>
   );
 }
 

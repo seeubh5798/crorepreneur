@@ -538,7 +538,7 @@ export const about = {
   tech: {
     label: "Tech behind Crorepreneur",
     name: "Shubham Kumar Agrawal",
-    text: "An engineer from IIT Bhubaneswar, Shubham builds the products and tools behind Crorepreneur's campaigns.",
+    text: "An IIT grad, AI enthusiast, and tech innovator, Shubham has worked with industry giants like Turing, Brane, and Shamrock AI, building cutting-edge products and AI-driven solutions from the ground up. With expertise in AI, automation, and end-to-end product development, he blends technology with creativity to turn ambitious ideas into scalable solutions. As the tech brain behind Crorepreneur, he drives the AI-powered tools, intelligent systems, and technology that fuel its campaigns and digital innovation.",
     link: { label: "LinkedIn", href: "https://www.linkedin.com/in/shubham-kumar-agrawal-45311b171/" },
   },
   beliefsLabel: "Beliefs",

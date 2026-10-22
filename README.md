@@ -112,8 +112,8 @@ has these parts:
 - **Who we work with:** two cards, "Into India" and "Out of India", then the
   brands we have worked with.
 - **The founder:** Chabi Gupta, with her portrait.
-- **The tech behind Crorepreneur:** under her bio, a short note on Shubham
-  Kumar Agrawal, without a photo.
+- **The tech behind Crorepreneur:** a slim band under her section, on
+  Shubham Kumar Agrawal, without a photo.
 - **What we believe**, then a way to start a campaign.
 
 Its bar keeps a **Back to home** button in view, and the home page links to
