@@ -20,13 +20,37 @@ motion with Motion; icons from Lucide.
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm run build    # production build
-npm run start    # serve the production build
+npm run build    # the finished site, as plain files in out/
+npx serve out    # preview the build (any static file server works)
 npm run lint
 ```
 
 Fonts are self-hosted from `app/fonts` (Geist and Instrument Serif, both
 under the SIL Open Font License), so the build needs no network access.
+
+## Hosting
+
+The site is built as plain files (`output: "export"` in `next.config.ts`),
+so any static host can serve it. It is set up for Cloudflare Pages, whose
+free plan allows business sites.
+
+- **Build settings:** framework preset "Next.js (Static HTML Export)",
+  build command `npx next build`, build output directory `out`, production
+  branch `main`.
+- **Deploys:** every push to `main` builds and publishes the site. Other
+  branches and pull requests get a preview link. A failed build leaves the
+  live site as it was, and **Deployments** in the Pages project rolls back
+  to any earlier version.
+- **Domain:** `crorepreneur.com` is registered at GoDaddy. Point its
+  nameservers at Cloudflare (in GoDaddy: **DNS**, then **Nameservers**),
+  then add it under **Custom domains** in the Pages project.
+- **Email:** with the domain on Cloudflare, Email Routing can forward
+  `hello@crorepreneur.com`, where enquiries go, to any inbox.
+
+A static export can't use anything that needs a server: Server Actions,
+route handlers that read the request, rewrites, redirects, headers, proxy
+(formerly middleware), or Next.js image optimisation (images here are
+`unoptimized`). Cache Components is off for the same reason.
 
 ## The work
 
