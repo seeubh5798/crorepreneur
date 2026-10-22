@@ -1,0 +1,11 @@
+// Cloudflare Workers: the site is the plain files `npm run build` writes to
+// out/, served as static assets, so no server code runs. /about serves
+// about.html, and an address that matches no file gets 404.html.
+{
+  "name": "crorepreneur",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}

@@ -31,19 +31,20 @@ under the SIL Open Font License), so the build needs no network access.
 ## Hosting
 
 The site is built as plain files (`output: "export"` in `next.config.ts`),
-so any static host can serve it. It is set up for Cloudflare Pages, whose
-free plan allows business sites.
+so any static host can serve it. It runs on Cloudflare Workers as static
+assets, which is free, with unlimited requests, and allows business sites.
 
-- **Build settings:** framework preset "Next.js (Static HTML Export)",
-  build command `npx next build`, build output directory `out`, production
-  branch `main`.
-- **Deploys:** every push to `main` builds and publishes the site. Other
-  branches and pull requests get a preview link. A failed build leaves the
-  live site as it was, and **Deployments** in the Pages project rolls back
-  to any earlier version.
+- **Build settings:** Cloudflare's defaults, connected to this repository:
+  build command `npm run build`, deploy command `npx wrangler deploy`,
+  production branch `main`. `wrangler.jsonc` tells the deploy to upload
+  `out/`. Without that file, the deploy tries to set the site up as a
+  server app and fails.
+- **Deploys:** every push to `main` builds and publishes the site. A failed
+  build leaves the live site as it was, and **Deployments** in the Worker
+  rolls back to an earlier version.
 - **Domain:** `crorepreneur.com` is registered at GoDaddy. Point its
   nameservers at Cloudflare (in GoDaddy: **DNS**, then **Nameservers**),
-  then add it under **Custom domains** in the Pages project.
+  then add it in the Worker under **Settings**, **Domains & Routes**.
 - **Email:** with the domain on Cloudflare, Email Routing can forward
   `hello@crorepreneur.com`, where enquiries go, to any inbox.
 
