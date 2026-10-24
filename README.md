@@ -194,7 +194,14 @@ email app with the enquiry filled in instead, so no enquiry is lost:
 - `TURNSTILE_SITE_KEY`, public, in `wrangler.jsonc`: from the same widget.
 
 Secrets are set in Cloudflare under **Workers & Pages → crorepreneur →
-Settings → Variables and Secrets**, never in the code. Resend's DNS records
+Settings → Variables and Secrets**, never in the code:
+
+- Add both with **Type: Secret**. A plain variable added there is removed
+  by the next deploy, which only keeps the variables in `wrangler.jsonc`.
+- Don't add `TURNSTILE_SITE_KEY` there: it comes from `wrangler.jsonc`, and
+  a secret of the same name makes Cloudflare refuse the next deploy.
+- Ignore the dashboard's offer to copy variables into `wrangler.jsonc`.
+  That file is public on GitHub. Resend's DNS records
 (on `send.crorepreneur.com` and `resend._domainkey`) sit beside GoDaddy's
 email records without touching them.
 
