@@ -17,7 +17,7 @@
     // and the secrets RESEND_API_KEY and TURNSTILE_SECRET_KEY set on the Worker
     // in Cloudflare, the form sends enquiries itself. Without any of the three,
     // it opens the visitor's email app instead.
-    "TURNSTILE_SITE_KEY": ""
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFjy5R8IZYOqMRPC"
   },
   // Keeps the script's logs (a failed email, say) in the Worker's dashboard.
   "observability": {
