@@ -186,7 +186,7 @@ export function EnquiryDialog() {
       }
       tokenRef.current = null;
       setStatus("sending");
-      setStatus(await sendEnquiry(entry, { token, trap: text("address") }));
+      setStatus(await sendEnquiry(entry, { token, trap: text("referral_code") }));
       return;
     }
 
@@ -269,12 +269,18 @@ export function EnquiryDialog() {
             <Field name="phone" type="tel" {...copy.fields.phone} optional autoComplete="tel" />
             <Field name="message" multiline {...copy.fields.message} optional className="sm:col-span-2" />
 
-            {/* A field for bots only: people never see it, and anything typed in it is dropped. */}
-            <div aria-hidden="true" className="enquiry-trap">
-              <label>
-                Address
-                <input type="text" name="address" tabIndex={-1} autoComplete="off" />
-              </label>
+            {/* A field for bots only. It is never shown, so people, and their browser's autofill,
+                leave it empty; a bot that fills in every field gives itself away. Its name
+                matches nothing autofill knows, unlike "address", which Chrome would fill. */}
+            <div hidden>
+              <input
+                type="text"
+                name="referral_code"
+                tabIndex={-1}
+                autoComplete="off"
+                data-1p-ignore
+                data-lpignore="true"
+              />
             </div>
 
             <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-end sm:justify-between">

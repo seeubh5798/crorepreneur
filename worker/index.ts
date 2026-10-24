@@ -81,25 +81,32 @@ async function receive(request: Request, env: Env, url: URL): Promise<Response> 
 
   // A field people never see (see EnquiryDialog): anything in it came from a bot.
   // It is told the enquiry went through, so it has no reason to try again.
-  if (typeof body.address === "string" && body.address.trim()) return json({ ok: true });
+  if (typeof body.referral_code === "string" && body.referral_code.trim()) {
+    console.warn("Dropped an enquiry: the hidden trap field was filled in.");
+    return json({ ok: true });
+  }
 
   const enquiry = clean(body);
   if (!enquiry) return json({ error: "fields" }, 400);
 
   if (!(await human(body.turnstileToken, request, env))) return json({ error: "check" }, 403);
 
+  let inbox: string;
   try {
-    await send(env, inboxEmail(enquiry, new Date()));
+    inbox = await send(env, inboxEmail(enquiry, new Date()));
   } catch (error) {
     console.error("The enquiry email failed:", error);
     return json({ error: "send" }, 502);
   }
+  let reply = "";
   try {
-    await send(env, replyEmail(enquiry));
+    reply = await send(env, replyEmail(enquiry));
   } catch (error) {
     // The enquiry is in the inbox, which is what matters; the reply can be written by hand.
     console.error("The reply email failed:", error);
   }
+  // Resend's ids for the two emails: search for them under Emails in Resend.
+  console.log("Enquiry sent.", { inbox, reply: reply || "failed" });
   return json({ ok: true });
 }
 
@@ -146,7 +153,8 @@ async function human(token: unknown, request: Request, env: Env) {
   }
 }
 
-async function send(env: Env, email: Email) {
+/** Sends one email through Resend, and returns its id there. */
+async function send(env: Env, email: Email): Promise<string> {
   const response = await fetch(`${env.RESEND_API_URL || "https://api.resend.com"}/emails`, {
     method: "POST",
     headers: {
@@ -156,6 +164,8 @@ async function send(env: Env, email: Email) {
     body: JSON.stringify(email),
   });
   if (!response.ok) throw new Error(`Resend answered ${response.status}: ${(await response.text()).slice(0, 300)}`);
+  const sent = (await response.json().catch(() => ({}))) as { id?: string };
+  return sent.id ?? "unknown";
 }
 
 function json(data: unknown, status = 200, headers: Record<string, string> = {}) {

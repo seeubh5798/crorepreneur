@@ -68,7 +68,7 @@ export async function sendEnquiry(
       const response = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...enquiry, turnstileToken: check.token, address: check.trap }),
+        body: JSON.stringify({ ...enquiry, turnstileToken: check.token, referral_code: check.trap }),
       });
       if (response.ok) return "sent";
     } catch {
