@@ -33,13 +33,48 @@ export function formatEnquiry(enquiry: Enquiry): string {
   return enquiry.message ? `${details.join("\n")}\n\n${enquiry.message}` : details.join("\n");
 }
 
+/** Whether the site's server (worker/) can send enquiries, and the key for its spam check. */
+export type EnquiryConfig = { enabled: boolean; turnstileSiteKey: string };
+
+let config: Promise<EnquiryConfig> | undefined;
+
 /**
- * Delivers an enquiry. There is no backend yet, so for now this opens the
- * visitor's email app with the enquiry filled in, addressed to the studio's
- * inbox, and resolves "handed-off". When the backend exists, POST the
- * enquiry to it here and resolve "sent"; the form already handles both.
+ * Asks the server once per visit. Where it can't answer, as under
+ * `next dev`, or hasn't been given its keys, the form uses the email app.
  */
-export async function sendEnquiry(enquiry: Enquiry): Promise<"sent" | "handed-off"> {
+export function getEnquiryConfig(): Promise<EnquiryConfig> {
+  config ??= fetch("/api/enquiry", { headers: { accept: "application/json" } })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((data: Partial<EnquiryConfig> | null) => {
+      const key = typeof data?.turnstileSiteKey === "string" ? data.turnstileSiteKey : "";
+      return { enabled: Boolean(data?.enabled && key), turnstileSiteKey: key };
+    })
+    .catch(() => ({ enabled: false, turnstileSiteKey: "" }));
+  return config;
+}
+
+/**
+ * Delivers an enquiry. Given a token from the spam check, the server emails
+ * it to the inbox and sends the visitor a reply, and this resolves "sent".
+ * Without one, or if that fails, it opens the visitor's email app with the
+ * enquiry filled in, addressed to the inbox, and resolves "handed-off".
+ */
+export async function sendEnquiry(
+  enquiry: Enquiry,
+  check?: { token: string; trap: string },
+): Promise<"sent" | "handed-off"> {
+  if (check?.token) {
+    try {
+      const response = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...enquiry, turnstileToken: check.token, address: check.trap }),
+      });
+      if (response.ok) return "sent";
+    } catch {
+      // Offline, or the server is down: the email app still works.
+    }
+  }
   const subject = `${site.contact.subject}: ${enquiry.company}`;
   window.location.href = `mailto:${site.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(formatEnquiry(enquiry))}`;
   return "handed-off";

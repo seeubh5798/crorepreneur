@@ -157,25 +157,56 @@ There is no WebGL on the page, which keeps it light and fast on phones.
 Visitors who prefer reduced motion get the page still, with no scroll
 effects.
 
-## The Start a Campaign form
+## The enquiry form
 
 Every "Let’s Grow Your Brand" button opens the enquiry form
 (`components/ui/EnquiryDialog.tsx`, copy under `enquiry` in
 `content/site.ts`): name, work email, brand, website or Instagram, the
-cities or regions the campaign should run in, a budget range, phone and a
+cities or markets the campaign should run in, a budget range, phone and a
 note. Name, email and brand are required.
 
-There is no backend yet, so `sendEnquiry()` in `lib/enquiry.ts` opens the
-visitor's email app with the enquiry filled in, addressed to
-`site.contact.email`, and the form tells them to press send. To deliver
-enquiries from a backend instead, change only that function: POST the
-enquiry and resolve `"sent"`. The form already shows a thank-you for that
-case. Without script, the buttons open a blank email instead.
+**How it sends.** The form posts to `/api/enquiry`, the site's one piece of
+server code (`worker/index.ts`, on the same Cloudflare Worker as the
+site), which does three things:
 
-## Replace the placeholders
+1. **Spam check:** it checks the visitor with Cloudflare Turnstile, a free
+   check most people pass without doing anything. A hidden field that only
+   bots fill in catches more.
+2. **To the inbox:** it emails the enquiry to `site.contact.email`
+   (hello@crorepreneur.com). Replying answers the sender.
+3. **To the sender:** it sends them a reply from hello@: thanks, an answer
+   promised within 24 hours, what happens next, and a copy of what they
+   sent.
 
-Everything temporary is marked `PLACEHOLDER` in **`content/site.ts`**. That
-file holds all copy on the site, including the case studies under `work`.
+Emails go out through Resend, free up to 3,000 a month and 100 a day. Their
+copy is under `enquiryEmails` in `content/site.ts`, and `worker/emails.ts`
+lays them out. A booking link in `enquiryEmails.reply.call.href`, such as a
+Calendly event, adds a "Book a 30-minute call" button to the reply, with
+the sender's name and email filled in.
+
+**Switching it on.** It needs three settings on the Worker. Until all
+three are there, and whenever sending fails, the form opens the visitor's
+email app with the enquiry filled in instead, so no enquiry is lost:
+
+- `RESEND_API_KEY`, a secret: a Resend key with sending access, for the
+  verified domain crorepreneur.com.
+- `TURNSTILE_SECRET_KEY`, a secret: from the Turnstile widget.
+- `TURNSTILE_SITE_KEY`, public, in `wrangler.jsonc`: from the same widget.
+
+Secrets are set in Cloudflare under **Workers & Pages → crorepreneur →
+Settings → Variables and Secrets**, never in the code. Resend's DNS records
+(on `send.crorepreneur.com` and `resend._domainkey`) sit beside GoDaddy's
+email records without touching them.
+
+**Testing locally.** Run `npm run build`, then `npx wrangler dev`, with a
+`.dev.vars` file (ignored by Git) holding Turnstile's test keys and a key
+for Resend. The site keeps working under `npm run dev`, where the form
+falls back to the email app.
+
+## Changing the content
+
+**`content/site.ts`** holds all copy on the site, including the case studies
+under `work` and the enquiry emails under `enquiryEmails`.
 
 | What | Where |
 | --- | --- |
@@ -241,9 +272,12 @@ components/
   ui/                 Button, EnquiryDialog, TypeLines, Logo, Reveal,
                       RailButtons, Magnetic, CountUp, CopyEmail, Cursor,
                       icons
-content/site.ts       All copy, the case studies and placeholder content
+content/site.ts       All copy, the case studies and the enquiry emails
 lib/                  Enquiry delivery, smooth scrolling, helpers
-public/brand/         The logo files
+worker/               The enquiry endpoint and its two emails
+wrangler.jsonc        Cloudflare: the site's files, the endpoint, the
+                      spam check's public key
+public/brand/         The logo files (email-logo.png for the emails)
 public/images/        founder.webp (the portrait on the site)
   work/               Cover images for the case studies
 design/               founder-studio.jpg (the source photo, not published)

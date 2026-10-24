@@ -1,9 +1,6 @@
 /**
- * All site copy and placeholder content lives in this file.
- *
- * Everything marked PLACEHOLDER is temporary and written to be replaced: for
- * now, only the contact email. Nothing else in the codebase needs to change
- * when you swap it.
+ * All site copy lives in this file, including the two emails the site sends
+ * for every enquiry (`enquiryEmails`, laid out by worker/emails.ts).
  */
 
 export const site = {
@@ -19,8 +16,10 @@ export const site = {
   ],
   /** The About page, linked from the navigation, the founder section and the footer. */
   about: { label: "About", href: "/about" },
+  /** The address the site lives at, for links in its emails. */
+  url: "https://crorepreneur.com",
   contact: {
-    /** PLACEHOLDER: replace with the real inbox. */
+    /** The inbox every enquiry goes to. */
     email: "hello@crorepreneur.com",
     subject: "New campaign enquiry",
   },
@@ -430,14 +429,14 @@ export const founderSection = {
 export const cta = {
   figure: "1,00,00,000",
   headline: ["Your next crore", "starts with", "one post."],
-  body: "Tell us about the brand and where it needs to be. You will hear back within two working days.",
+  body: "Tell us about the brand and where it needs to be. You will hear back within 24 hours.",
   button: "Let’s Grow Your Brand",
 } as const;
 
 /** The "Start a campaign" form. Every "Let’s Grow Your Brand" button opens it. */
 export const enquiry = {
   title: "Start a campaign",
-  intro: "Tell us about the brand and where it needs to be. You will hear back within two working days.",
+  intro: "Tell us about the brand and where it needs to be. You will hear back within 24 hours.",
   fields: {
     name: { label: "Your name", placeholder: "Full name" },
     email: { label: "Work email", placeholder: "you@brand.com" },
@@ -460,18 +459,70 @@ export const enquiry = {
     email: "Please enter a valid email address.",
     company: "Please tell us the brand or company.",
   },
-  /** Shown after the form hands the enquiry to the visitor's email app (until there is a backend). */
+  /** The spam check (Turnstile), shown while the form sends enquiries itself. */
+  check: {
+    label: "Spam check",
+    wait: "One moment: the spam check is still running. Please send again in a second.",
+  },
+  /** Shown when the form hands the enquiry to the visitor's email app instead. */
   handedOff: {
     title: "Almost there",
-    body: "Your email app has opened with everything filled in. Press send and we will reply within two working days.",
+    body: "Your email app has opened with everything filled in. Press send and we will reply within 24 hours.",
     fallback: "If nothing opened, write to us at",
   },
-  /** Shown once a backend has delivered the enquiry. */
+  /** Shown once the enquiry is in the inbox. */
   sent: {
     title: "Thank you",
-    body: "Your enquiry is with us. We will reply within two working days.",
+    body: "Your enquiry is with us, and a copy is on its way to your inbox. We will reply within 24 hours.",
   },
   close: "Close",
+} as const;
+
+/**
+ * The two emails the site sends for every enquiry; worker/emails.ts lays
+ * them out. In the text, {firstName} and {name} are the sender's first and
+ * full name, and {brand} their brand.
+ */
+export const enquiryEmails = {
+  /** To the inbox: the enquiry in full. Replying answers the sender. */
+  inbox: {
+    from: "Crorepreneur website <website@crorepreneur.com>",
+    subject: "New enquiry: {brand}, from {name}",
+    title: "New enquiry",
+    intro: "From the form on crorepreneur.com. Reply to this email to answer {name} directly.",
+    /** The form asks "Your name"; here the labels are plain. */
+    labels: { name: "Name", email: "Email" },
+    receivedLabel: "Received",
+    footer: "Sent by the enquiry form on crorepreneur.com.",
+  },
+  /** To the sender: thanks, what happens next, and a copy of what they sent. */
+  reply: {
+    from: "Crorepreneur <hello@crorepreneur.com>",
+    replyTo: "hello@crorepreneur.com",
+    subject: "Thanks, {firstName}. We will be in touch within 24 hours",
+    /** The line an inbox shows beside the subject. */
+    preview: "Your enquiry about {brand} is with the Crorepreneur team.",
+    eyebrow: "Your growth marketing partner",
+    /** The name is said in the serif voice, as on the cover. */
+    title: "Thank you,",
+    body: "Your enquiry about {brand} is with us. We read every brief ourselves, and we will get back to you within 24 hours with first thoughts and a few questions.",
+    /** A booking link, such as a Calendly event, adds this button. Empty: no button. */
+    call: {
+      href: "",
+      intro: "Rather talk sooner?",
+      label: "Book a 30-minute call",
+    },
+    nextTitle: "What happens next",
+    next: [
+      { title: "We read your brief", text: "Who you want to reach, where, and what success looks like." },
+      { title: "We reply within 24 hours", text: "With first ideas, and anything else we need to know." },
+      { title: "We plan it together", text: "A short call to shape the campaign and the creators behind it." },
+    ],
+    summaryTitle: "What you sent us",
+    signOff: "Warm regards,",
+    signature: { name: "Chabi Gupta", role: "Founder, Crorepreneur" },
+    footer: "You are receiving this because you sent an enquiry on crorepreneur.com. Reply to this email to reach us.",
+  },
 } as const;
 
 /**
@@ -563,5 +614,5 @@ export const about = {
   ],
   ctaTitle: "Have a story worth telling?",
   ctaBody:
-    "Tell us about the brand and the markets you want to reach, in India or anywhere else. You will hear back within two working days.",
+    "Tell us about the brand and the markets you want to reach, in India or anywhere else. You will hear back within 24 hours.",
 } as const;

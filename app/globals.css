@@ -1095,6 +1095,21 @@ html.lenis body {
   }
 }
 
+/* The spam check (Turnstile) is 300px wide at least; it gets its height once it loads. */
+.enquiry-check {
+  width: min(100%, 18.75rem);
+  min-height: 4.0625rem;
+}
+
+/* The bots-only field: off-screen, so people never meet it. */
+.enquiry-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* The page behind stays put while the form is open (touch and keyboard too). */
 html.enquiry-open {
   overflow: hidden;

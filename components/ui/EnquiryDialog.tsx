@@ -4,25 +4,69 @@ import { X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { enquiry as copy, site } from "@/content/site";
 import { cn } from "@/lib/cn";
-import { sendEnquiry, type Enquiry } from "@/lib/enquiry";
+import { getEnquiryConfig, sendEnquiry, type Enquiry } from "@/lib/enquiry";
 import { getLenis } from "@/lib/smooth";
 
 type RequiredField = "name" | "email" | "company";
 type Status = "editing" | "sending" | "handed-off" | "sent";
+/** The spam check: not used, loading, passed, or broken (then the email app takes over). */
+type Check = "off" | "loading" | "ready" | "error";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+/** Cloudflare Turnstile's script, as far as this form uses it. */
+type Turnstile = {
+  render(container: HTMLElement, options: Record<string, unknown>): string;
+  remove(widget: string): void;
+  reset(widget: string): void;
+};
+
+let turnstileScript: Promise<Turnstile> | undefined;
+
+/** Loads Turnstile the first time the form needs it. */
+function loadTurnstile(): Promise<Turnstile> {
+  turnstileScript ??= new Promise<Turnstile>((resolve, reject) => {
+    const loaded = () => (window as { turnstile?: Turnstile }).turnstile;
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.onload = () => {
+      const turnstile = loaded();
+      if (turnstile) resolve(turnstile);
+      else reject(new Error("Turnstile did not start"));
+    };
+    script.onerror = () => {
+      turnstileScript = undefined;
+      reject(new Error("Turnstile did not load"));
+    };
+    document.head.append(script);
+  });
+  return turnstileScript;
+}
+
 /**
- * The "Start a Campaign" form, in a modal dialog. Any link or button marked
+ * The "Start a campaign" form, in a modal dialog. Any link or button marked
  * data-enquiry opens it; those links still point at the inbox, so they work
  * without script. Built on the native <dialog>: focus stays inside while it
  * is open, Escape or a click outside closes it, and focus returns to the
  * button that opened it. The page behind stops scrolling while it is open.
+ *
+ * When the site's server can send (see lib/enquiry.ts), the form shows
+ * Turnstile, Cloudflare's spam check, which most people pass without doing
+ * anything, and sends the enquiry with its token. Otherwise it opens the
+ * visitor's email app, as it always has.
  */
 export function EnquiryDialog() {
   const ref = useRef<HTMLDialogElement>(null);
+  const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<Status>("editing");
   const [errors, setErrors] = useState<Partial<Record<RequiredField, string>>>({});
+  const [siteKey, setSiteKey] = useState("");
+  const [check, setCheck] = useState<Check>("off");
+  const [checkNote, setCheckNote] = useState(false);
+  const checkRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<string | null>(null);
+  const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -33,13 +77,33 @@ export function EnquiryDialog() {
       if (!trigger || dialog.open) return;
       event.preventDefault();
       setStatus("editing");
+      setCheckNote(false);
+      setOpen(true);
       dialog.showModal();
       document.documentElement.classList.add("enquiry-open");
       getLenis()?.stop();
+      getEnquiryConfig().then((config) => {
+        if (!config.enabled) return;
+        setSiteKey(config.turnstileSiteKey);
+        setCheck((current) => (current === "off" ? "loading" : current));
+      });
     };
     const onClose = () => {
       document.documentElement.classList.remove("enquiry-open");
       getLenis()?.start();
+      setOpen(false);
+      // A token works once and expires in five minutes, so each opening gets a fresh check.
+      const widget = widgetRef.current;
+      widgetRef.current = null;
+      tokenRef.current = null;
+      if (widget) {
+        try {
+          (window as { turnstile?: Turnstile }).turnstile?.remove(widget);
+        } catch {
+          // Already gone with the form.
+        }
+      }
+      setCheck((current) => (current === "off" ? "off" : "loading"));
     };
     document.addEventListener("click", onClick);
     dialog.addEventListener("close", onClose);
@@ -48,6 +112,43 @@ export function EnquiryDialog() {
       dialog.removeEventListener("close", onClose);
     };
   }, []);
+
+  // Puts the spam check in the form once it is open and wanted.
+  useEffect(() => {
+    if (!open || status !== "editing" || check !== "loading" || !siteKey || widgetRef.current) return;
+    let cancelled = false;
+    loadTurnstile()
+      .then((turnstile) => {
+        const container = checkRef.current;
+        if (cancelled || !container || widgetRef.current) return;
+        widgetRef.current = turnstile.render(container, {
+          sitekey: siteKey,
+          theme: "light",
+          size: "flexible",
+          action: "enquiry",
+          callback: (token: string) => {
+            tokenRef.current = token;
+            setCheck("ready");
+            setCheckNote(false);
+          },
+          "expired-callback": () => {
+            tokenRef.current = null;
+            setCheck("loading");
+            if (widgetRef.current) turnstile.reset(widgetRef.current);
+          },
+          "error-callback": () => {
+            tokenRef.current = null;
+            setCheck("error");
+          },
+        });
+      })
+      .catch(() => {
+        if (!cancelled) setCheck("error");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, status, check, siteKey]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -73,6 +174,19 @@ export function EnquiryDialog() {
     const first = Object.keys(found)[0];
     if (first) {
       form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
+      return;
+    }
+
+    // With the spam check on, wait for its token; if it broke, the email app takes over.
+    if (check === "loading" || check === "ready") {
+      const token = tokenRef.current;
+      if (!token) {
+        setCheckNote(true);
+        return;
+      }
+      tokenRef.current = null;
+      setStatus("sending");
+      setStatus(await sendEnquiry(entry, { token, trap: text("address") }));
       return;
     }
 
@@ -155,8 +269,28 @@ export function EnquiryDialog() {
             <Field name="phone" type="tel" {...copy.fields.phone} optional autoComplete="tel" />
             <Field name="message" multiline {...copy.fields.message} optional className="sm:col-span-2" />
 
-            <div className="flex items-center justify-end sm:col-span-2">
-              <button type="submit" disabled={status === "sending"} className="enquiry-submit">
+            {/* A field for bots only: people never see it, and anything typed in it is dropped. */}
+            <div aria-hidden="true" className="enquiry-trap">
+              <label>
+                Address
+                <input type="text" name="address" tabIndex={-1} autoComplete="off" />
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-end sm:justify-between">
+              {check !== "off" && check !== "error" ? (
+                <div className="flex flex-col gap-2">
+                  <div ref={checkRef} aria-label={copy.check.label} className="enquiry-check" />
+                  {checkNote && (
+                    <p role="status" className="max-w-[20rem] text-[0.8125rem] leading-snug text-fg-2">
+                      {copy.check.wait}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <span />
+              )}
+              <button type="submit" disabled={status === "sending"} className="enquiry-submit self-end">
                 {status === "sending" ? copy.sending : copy.submit}
               </button>
             </div>
@@ -179,7 +313,17 @@ type FieldProps = {
   className?: string;
 };
 
-function Field({ name, label, placeholder, type = "text", error, optional, multiline, autoComplete, className }: FieldProps) {
+function Field({
+  name,
+  label,
+  placeholder,
+  type = "text",
+  error,
+  optional,
+  multiline,
+  autoComplete,
+  className,
+}: FieldProps) {
   const id = `enquiry-${name}`;
   const shared = {
     id,
