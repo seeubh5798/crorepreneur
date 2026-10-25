@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import { Cursor } from "@/components/ui/Cursor";
-import { MotionProvider } from "@/components/ui/MotionProvider";
 import { ScrollReset } from "@/components/ui/ScrollReset";
 import { site } from "@/content/site";
 import "./globals.css";
@@ -51,7 +50,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         >
           Skip to content
         </a>
-        <MotionProvider>{children}</MotionProvider>
+        {children}
         <ScrollReset />
         <div aria-hidden="true" className="grain" />
         <Cursor />

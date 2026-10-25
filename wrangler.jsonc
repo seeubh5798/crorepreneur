@@ -1,7 +1,8 @@
 // Cloudflare Workers. The site is the plain files `npm run build` writes to
 // out/, served as static assets: /about serves about.html, and an address
-// that matches no file gets 404.html. Only /api/* runs the script in
-// worker/, which sends the enquiry emails.
+// that matches no file gets 404.html. Only /api/* and /videos/* run the
+// script in worker/, which sends the enquiry emails and sends videos in the
+// pieces Safari asks for.
 {
   "name": "crorepreneur",
   "main": "worker/index.ts",
@@ -10,7 +11,7 @@
     "directory": "./out",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*", "/videos/*"]
   },
   "vars": {
     // The public key of the form's spam check (Cloudflare Turnstile). With it,

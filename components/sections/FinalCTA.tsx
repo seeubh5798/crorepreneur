@@ -14,7 +14,7 @@ export function FinalCTA() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="screen scheme-ink relative isolate overflow-hidden py-20"
+      className="screen scheme-ink relative isolate overflow-hidden py-14 lg:py-20"
     >
       <div
         aria-hidden="true"
@@ -45,8 +45,8 @@ export function FinalCTA() {
               </span>
             ))}
           </h2>
-          <p className="mt-8 max-w-lg text-[1.0625rem] leading-[1.6] text-fg-2 lg:mt-[min(2rem,3svh)]">{cta.body}</p>
-          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5 lg:mt-[min(2.5rem,4svh)]">
+          <p className="mt-6 max-w-lg text-[1.0625rem] leading-[1.6] text-fg-2 lg:mt-[min(2rem,3svh)]">{cta.body}</p>
+          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-5 lg:mt-[min(2.5rem,4svh)]">
             <Button href={mailto} size="lg" enquiry>
               {cta.button}
             </Button>

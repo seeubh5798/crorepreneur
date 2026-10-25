@@ -184,7 +184,7 @@ function eyebrow(color: string) {
 
 /** The whole email: the page, a 600px column, and the footer under it. */
 function frame({ title, preview, footer, rows }: { title: string; preview: string; footer: string; rows: string[] }) {
-  const instagram = site.socials.find((social) => social.label === "Instagram")?.href;
+  const instagram = site.socials.find((social) => social.network === "instagram")?.href;
   const links = [
     `<a href="${site.url}" style="color:${FG2};text-decoration:none;">${site.url.replace(/^https?:\/\//, "")}</a>`,
     instagram ? `<a href="${esc(instagram)}" style="color:${FG2};text-decoration:none;">Instagram</a>` : "",

@@ -31,12 +31,12 @@ export function Capabilities() {
   const { offering } = capabilities;
 
   return (
-    <section id="services" aria-labelledby="services-title" className="screen screen-flush relative pt-20">
+    <section id="services" aria-labelledby="services-title" className="screen screen-flush relative pt-14 lg:pt-20">
       <div className="shell">
         <Reveal>
           <p className="section-label">{capabilities.label}</p>
         </Reveal>
-        <Reveal className="mt-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between lg:mt-[min(1.5rem,2.5svh)]">
+        <Reveal className="mt-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between lg:mt-[min(1.5rem,2.5svh)]">
           <h2 id="services-title" className="section-title">
             {capabilities.title}
           </h2>
@@ -44,8 +44,8 @@ export function Capabilities() {
         </Reveal>
       </div>
 
-      <div className="scheme-accent mt-12 py-12 lg:mt-[min(2.5rem,3svh)] lg:flex lg:flex-1 lg:items-center lg:py-[min(3.25rem,5svh)]">
-        <article aria-labelledby="offering-name" className="shell grid gap-10 lg:grid-cols-12 lg:gap-x-12">
+      <div className="scheme-accent mt-9 py-10 lg:mt-[min(2.5rem,3svh)] lg:flex lg:flex-1 lg:items-center lg:py-[min(3.25rem,5svh)]">
+        <article aria-labelledby="offering-name" className="shell grid gap-8 lg:grid-cols-12 lg:gap-x-12">
           <Reveal className="lg:col-span-7">
             <h3
               id="offering-name"
@@ -53,15 +53,15 @@ export function Capabilities() {
             >
               {offering.name}
             </h3>
-            <p className="display mt-5 text-[clamp(1.375rem,2.4vw,1.875rem)] leading-[1.15] tracking-[-0.03em] text-fg lg:mt-[min(1.25rem,2svh)] lg:text-[clamp(1.25rem,min(2.2vw,3.4svh),1.875rem)]">
+            <p className="display mt-4 text-[clamp(1.375rem,2.4vw,1.875rem)] leading-[1.15] tracking-[-0.03em] text-fg lg:mt-[min(1.25rem,2svh)] lg:text-[clamp(1.25rem,min(2.2vw,3.4svh),1.875rem)]">
               {offering.statement}
             </p>
-            <p className="mt-5 max-w-xl text-[1rem] leading-[1.65] text-fg-2 lg:mt-[min(1.25rem,2svh)] lg:max-w-[40rem] lg:text-[clamp(0.9375rem,2.1svh,1rem)]">
+            <p className="mt-4 max-w-xl text-[1rem] leading-[1.6] text-fg-2 lg:mt-[min(1.25rem,2svh)] lg:max-w-[40rem] lg:text-[clamp(0.9375rem,2.1svh,1rem)]">
               {offering.body}
             </p>
 
-            <p className="mt-8 text-[0.8125rem] text-fg-3 lg:mt-[min(1.75rem,2.6svh)]">{offering.includesLabel}</p>
-            <ul className="hook-list mt-3 flex flex-col gap-2.5 text-[0.9375rem] text-fg lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
+            <p className="mt-6 text-[0.8125rem] text-fg-3 lg:mt-[min(1.75rem,2.6svh)]">{offering.includesLabel}</p>
+            <ul className="hook-list mt-3 flex flex-col gap-2 text-[0.9375rem] text-fg lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
               {offering.includes.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -69,13 +69,13 @@ export function Capabilities() {
           </Reveal>
 
           <Reveal delay={80} className="flex flex-col gap-6 lg:col-span-5 lg:gap-[min(1.5rem,2.5svh)]">
-            <figure className="scheme-ink grid min-h-80 grid-cols-2 grid-rows-2 gap-2 rounded-[1.5rem] p-2 lg:min-h-0 lg:flex-1">
+            <figure className="scheme-ink grid h-36 grid-cols-3 gap-1.5 rounded-[1.25rem] p-1.5 sm:h-48 lg:h-auto lg:min-h-0 lg:flex-1 lg:grid-cols-2 lg:grid-rows-2 lg:gap-2 lg:rounded-[1.5rem] lg:p-2">
               {STILLS.map((still, index) => (
                 <div
                   key={still.src}
                   className={
                     index === 0
-                      ? "relative row-span-2 overflow-hidden rounded-lg"
+                      ? "relative overflow-hidden rounded-lg lg:row-span-2"
                       : "relative overflow-hidden rounded-lg"
                   }
                 >
@@ -84,7 +84,7 @@ export function Capabilities() {
                     alt={still.alt}
                     fill
                     unoptimized
-                    sizes="(min-width: 64rem) 16rem, 45vw"
+                    sizes="(min-width: 64rem) 16rem, 32vw"
                     className="object-cover"
                     style={{ objectPosition: still.position }}
                   />
@@ -92,7 +92,8 @@ export function Capabilities() {
               ))}
             </figure>
 
-            <div className="flex flex-col gap-3 border-t border-line pt-5 lg:pt-[min(1.25rem,2svh)]">
+            {/* On phones the cards above say enough; this list is for wider screens. */}
+            <div className="flex flex-col gap-3 border-t border-line pt-5 max-sm:hidden lg:pt-[min(1.25rem,2svh)]">
               <p className="text-[0.8125rem] text-fg-3">{offering.madeForLabel}</p>
               <ul className="flex flex-wrap gap-2">
                 {offering.madeFor.map((use) => (

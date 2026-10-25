@@ -14,12 +14,12 @@ export function Process() {
   const steps = process.steps.length;
 
   return (
-    <section id="approach" aria-labelledby="approach-title" className="screen scheme-dark relative py-20">
+    <section id="approach" aria-labelledby="approach-title" className="screen scheme-dark relative py-14 lg:py-20">
       <div className="shell">
         <Reveal>
           <p className="section-label">{process.label}</p>
         </Reveal>
-        <Reveal className="mt-8 lg:mt-[min(2rem,3svh)]">
+        <Reveal className="mt-6 lg:mt-[min(2rem,3svh)]">
           <h2 id="approach-title" className="section-title lg:text-[clamp(2rem,min(3.7vw,6svh),3.75rem)]">
             {process.title.map((word, index) =>
               index === last ? (
@@ -37,8 +37,9 @@ export function Process() {
           </div>
         </Reveal>
 
-        <Reveal className="mt-12 lg:mt-[min(1rem,1.5svh)]">
-          <ol className="stairs">
+        <Reveal className="mt-8 lg:mt-[min(1rem,1.5svh)]">
+          {/* On phones and tablets a row of cards that swipes sideways (and scrolls with the arrow keys). */}
+          <ol className="stairs" tabIndex={0} aria-label={process.title.join(" ")}>
             {process.steps.map((step, index) => (
               <li key={step.id} style={{ "--down": steps - 1 - index } as CSSProperties}>
                 <div aria-hidden="true" className="stair-graph">

@@ -11,7 +11,11 @@ import { cn } from "@/lib/cn";
  * the same folder are for light grounds.
  */
 
-/** The horizontal lockup, mark beside the name, for the bars. */
+/**
+ * The horizontal lockup, mark beside the name, for the bars. Its height is
+ * h-8 unless `className` sets one: the classes aren't merged, so a passed
+ * height must replace the default, not compete with it.
+ */
 export function Logo({ className, eager }: { className?: string; eager?: boolean }) {
   return (
     <Image
@@ -21,7 +25,7 @@ export function Logo({ className, eager }: { className?: string; eager?: boolean
       height={100}
       unoptimized
       loading={eager ? "eager" : undefined}
-      className={cn("h-8 w-auto", className)}
+      className={cn("w-auto", className ?? "h-8")}
     />
   );
 }

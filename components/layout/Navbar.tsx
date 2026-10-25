@@ -74,7 +74,7 @@ export function Navbar() {
             className="-ml-1 shrink-0 rounded-md px-1 py-2"
             onClick={() => setMenuOpen(false)}
           >
-            <Logo eager className="h-7 sm:h-8" />
+            <Logo eager className="h-5 min-[300px]:h-6 min-[350px]:h-7 sm:h-8" />
           </a>
 
           <nav aria-label="Primary" className="hidden lg:block">

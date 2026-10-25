@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { about, site } from "@/content/site";
-import { AboutHeader } from "@/components/about/AboutHeader";
 import { AboutSections } from "@/components/about/AboutSections";
 import { Footer } from "@/components/layout/Footer";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { ScrollStory } from "@/components/motion/ScrollStory";
 import { EnquiryDialog } from "@/components/ui/EnquiryDialog";
 
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <AboutHeader />
+      <PageHeader back={{ href: "/", label: about.back, short: about.backShort }} />
       <main id="main" className="relative z-10 overflow-x-clip">
         <AboutSections />
       </main>

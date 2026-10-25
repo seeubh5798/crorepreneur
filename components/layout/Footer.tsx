@@ -1,11 +1,23 @@
-import Link from "next/link";
+import type { ReactNode } from "react";
 import { site } from "@/content/site";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
+import { LinkedInIcon } from "@/components/ui/LinkedInIcon";
 import { LogoFull } from "@/components/ui/Logo";
+
+/** The icon beside each network's name; inline SVG, so the buttons cost no request. */
+const ICONS: Partial<Record<(typeof site.socials)[number]["network"], ReactNode>> = {
+  instagram: <InstagramIcon size={17} />,
+  linkedin: <LinkedInIcon size={16} />,
+};
 
 /** Year the copyright line shows. Update here when it changes. */
 const COPYRIGHT_YEAR = 2026;
 
-/** `onHome` is false on other pages, where the section links lead back to the home page. */
+/**
+ * The logo, the copyright, and buttons to follow the company on its social
+ * accounts. The section links live in the header only. `onHome` is false on
+ * other pages, where the logo leads back to the home page.
+ */
 export function Footer({ onHome = true }: { onHome?: boolean }) {
   const socials = site.socials.filter((social) => social.href);
   const base = onHome ? "" : "/";
@@ -26,42 +38,27 @@ export function Footer({ onHome = true }: { onHome?: boolean }) {
           </p>
         </div>
 
-        <nav aria-label="Footer">
-          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            {site.nav.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={`${base}${item.href}`}
-                  className="link-underline py-2 transition-colors duration-300 hover:text-fg"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-            {onHome && (
-              <li>
-                <Link
-                  href={site.about.href}
-                  className="link-underline py-2 transition-colors duration-300 hover:text-fg"
-                >
-                  {site.about.label}
-                </Link>
-              </li>
-            )}
-            {socials.map((social) => (
-              <li key={social.label}>
-                <a
-                  href={social.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="link-underline py-2 transition-colors duration-300 hover:text-fg"
-                >
-                  {social.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {socials.length > 0 && (
+          <nav aria-label={site.follow.label} className="flex flex-col gap-3 md:items-end">
+            <p className="serif text-[1.25rem] leading-none text-fg-2">{site.follow.label}</p>
+            <ul className="flex flex-wrap gap-2.5">
+              {socials.map((social) => (
+                <li key={social.network}>
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${site.follow.name} ${social.label}`}
+                    className="inline-flex h-11 items-center gap-2.5 rounded-full border border-line-strong px-5 text-sm font-medium text-fg transition-colors duration-300 hover:border-fg hover:bg-fg hover:text-bg"
+                  >
+                    {ICONS[social.network]}
+                    {social.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </div>
     </footer>
   );

@@ -23,12 +23,25 @@ export const site = {
     email: "hello@crorepreneur.com",
     subject: "New campaign enquiry",
   },
-  /** Add an href to show a link in the footer. Empty entries stay hidden. */
+  /**
+   * Crorepreneur's own accounts, in the footer and the enquiry emails. Add an
+   * href to show a link; empty entries stay hidden.
+   */
   socials: [
-    { label: "Instagram", href: "https://www.instagram.com/chabigupta/" },
-    { label: "LinkedIn", href: "" },
-    { label: "YouTube", href: "" },
+    {
+      network: "instagram",
+      label: "Instagram",
+      href: "https://www.instagram.com/crorepreneur_pvt_ltd/",
+    },
+    {
+      network: "linkedin",
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/company/crorepreneur-private-limited/",
+    },
+    { network: "youtube", label: "YouTube", href: "" },
   ],
+  /** Over the footer's social buttons; each button reads "Follow Crorepreneur on …" to screen readers. */
+  follow: { label: "Follow us on", name: "Follow Crorepreneur on" },
 } as const;
 
 export const founder = {
@@ -37,7 +50,11 @@ export const founder = {
   role: "Founder, Crorepreneur",
   /** Shown on her name card on the cover, one per line. */
   credentials: ["Forbes India Top 100 Digital Star", "MBA, Kelley School of Business"],
-  instagram: { handle: "@chabigupta", user: "chabigupta", href: "https://www.instagram.com/chabigupta/" },
+  instagram: {
+    handle: "@chabigupta",
+    user: "chabigupta",
+    href: "https://www.instagram.com/chabigupta/",
+  },
   image: {
     /**
      * Replace this one file to swap the portrait: /public/images/founder.webp
@@ -47,6 +64,16 @@ export const founder = {
      * kept, unpublished, at /design/founder-studio.jpg.
      */
     src: "/images/founder.webp",
+    /**
+     * Smaller copies of the same file, for phones: the cover offers all three
+     * and each screen loads the smallest that is sharp on it. Make them again
+     * if the photo changes (see the README).
+     */
+    smaller: [
+      { src: "/images/founder-720.webp", width: 720 },
+      { src: "/images/founder-1080.webp", width: 1080 },
+    ],
+    width: 1323,
     alt: "Chabi Gupta, founder of Crorepreneur, smiling, in a tartan blazer with black satin lapels, a white shirt and a black bow",
     /** Width divided by height of the photo file. Update if the photo changes shape. */
     aspect: 1323 / 1037,
@@ -107,201 +134,80 @@ export type Metric = {
   label: string;
 };
 
-/** A piece of work: a campaign, a strategy project, or the page itself. */
-export type CaseStudy = {
-  id: string;
-  /** Who it was for. */
-  client: string;
-  /** What kind of work, shown on the image. */
-  kind: string;
-  date: string;
-  title: string;
-  summary: string;
-  /** Short facts, such as who starred in it. */
-  facts?: string[];
-  /** Numbers from the post itself, as of October 2026. */
-  stats?: { figure: string; label: string }[];
-  /** `position` is the CSS object-position, for images cropped to the card. */
-  image: { src: string; alt: string; position?: string };
-  link: { label: string; href: string };
-  /** A second link, such as the client's own post. */
-  also?: { label: string; href: string };
+/** A video in a case study, played on the site itself. */
+export type CaseVideo = {
+  /** A light copy (540p), for slow connections and data saver. */
+  src: string;
+  /** The full-quality copy everyone else gets, and its size in pixels. */
+  hd?: string;
+  width: number;
+  height: number;
+  /** The still shown until it plays. */
+  poster: string;
+  /** "m:ss". */
+  length: string;
+  /** Where the original lives, such as the post on Instagram. */
+  original: { label: string; href: string };
+  /** Short words for the player, such as the post's month. */
+  caption: string;
 };
 
-export const work = {
-  label: "Work",
-  title: "Selected work",
-  /** The rail of cases and its buttons. */
-  railLabel: "Case studies",
-  prev: "Previous case",
-  next: "Next case",
-  /** The screen before the cases: the numbers beside the press. */
-  proofLabel: "Track record",
-  proofTitle: "The work, in numbers",
-  intro:
-    "Campaigns made with creators for brands, a state tourism board and local retail, and the strategy behind them.",
+/** A still shown with a case's Reels, such as the creative a Reel became. */
+export type CaseImage = {
+  src: string;
+  alt: string;
+  caption: string;
+  original: { label: string; href: string };
+};
+
+/**
+ * One case study: what the brand came with, what we made, what happened.
+ * `media` is either Reels (tall, one or more, with a still that belongs to
+ * the results if there is one) or one film (wide).
+ */
+export type CaseStudy = {
+  /** Its address: /work/<id>. */
+  id: string;
+  name: string;
+  /** The line under the name, set large. */
+  line: string;
+  /** Client, year, industry and the rest, in order. */
+  facts: readonly { label: string; value: string }[];
+  /** The headline result. */
+  result: string;
+  challenge: readonly string[];
+  solution: readonly string[];
+  results: { points?: readonly string[]; text?: readonly string[] };
+  media:
+    | {
+        kind: "reels";
+        videos: readonly CaseVideo[];
+        image?: CaseImage;
+        /** Clips from a post rather than Reels: named so on the card and in the player. */
+        clips?: boolean;
+      }
+    | { kind: "film"; video: CaseVideo };
+  /** Its card on the home page: a still, which part of it to keep in the frame, and what it shows. */
+  card: { image: string; alt: string; position?: string };
+  links: readonly { label: string; href: string }[];
+};
+
+/** The track record: four numbers beside the Forbes India feature (see Proof). */
+export const proof = {
+  label: "Track record",
+  title: "The work, in numbers",
   /** Counted up as they scroll into view. */
   highlights: [
     { value: 177, suffix: "K", label: "Followers on @yourregularmom" },
     { value: 35, suffix: "M", label: "Views on our best reel" },
     { value: 50, suffix: "x", label: "Store footfall in one month" },
-    { value: 12.5, decimals: 1, suffix: "K", label: "Likes on one festive reel" },
+    {
+      value: 12.5,
+      decimals: 1,
+      suffix: "K",
+      label: "Likes on one festive reel",
+    },
   ] satisfies Metric[],
-  featured: {
-    id: "netflix-maa-behen",
-    client: "Netflix India",
-    kind: "Film launch",
-    date: "June 2026",
-    title: "Maa Behen, launched by a real mother and daughter",
-    summary:
-      "For the release of Maa Behen, Chabi and her mother Anita joined Madhuri Dixit, Tripti Dimri and Dharna Durga on the film's press set and did what @yourregularmom does best: swap desi mum stories in their own dialect. A meme cold open, a skit with the cast, and one clear line to close: now streaming on Netflix.",
-    facts: [
-      "With Madhuri Dixit, Tripti Dimri and Dharna Durga",
-      "Shot on the film's press set",
-      "Posted on @yourregularmom",
-    ],
-    stats: [
-      { figure: "3,157", label: "likes" },
-      { figure: "89", label: "comments" },
-    ],
-    image: {
-      src: "/images/work/netflix-maa-behen.webp",
-      alt: "Madhuri Dixit laughing with Tripti Dimri and Dharna Durga in front of a Netflix Maa Behen poster",
-    },
-    link: { label: "Watch the reel", href: "https://www.instagram.com/reel/DZUgpaBuS41/" },
-  } satisfies CaseStudy,
-  /** A comment left on the featured reel. */
-  featuredQuote: { text: "I will watch movie because of this promo!", by: "A comment on the reel" },
-  campaignsTitle: "Brand campaigns",
-  campaigns: [
-    {
-      id: "sunrise-chhath",
-      client: "ITC Sunrise Masale",
-      kind: "Festive campaign",
-      date: "October 2025",
-      title: "Chhath, the way families tell it",
-      summary:
-        "For Urja Ka Vardan, Sunrise put Chhath stories, puja timings and Chhath songs sung by Maithili Thakur on WhatsApp. Anita brought it to the families who keep the festival, in their own language.",
-      stats: [
-        { figure: "12,592", label: "likes" },
-        { figure: "22", label: "comments" },
-      ],
-      image: {
-        src: "/images/work/sunrise-chhath.webp",
-        alt: "Anita Gupta in an orange saree, preparing for Chhath",
-        position: "50% 38%",
-      },
-      link: { label: "Watch the reel", href: "https://www.instagram.com/reel/DQMbSL9kqRK/" },
-    },
-    {
-      id: "horlicks",
-      client: "Horlicks",
-      kind: "In-store offer",
-      date: "December 2025",
-      title: "A grandparent's afternoon, and a free milkshake",
-      summary:
-        "A quiet afternoon with the grandchild, a cup of Horlicks, and the milkshake that came free with the 500 g jar. A family moment first, then a nudge to look for the offer at the local store.",
-      stats: [
-        { figure: "751", label: "likes" },
-        { figure: "10", label: "comments" },
-      ],
-      image: { src: "/images/work/horlicks.webp", alt: "A small child beside a jar of Horlicks", position: "50% 75%" },
-      link: { label: "Watch the reel", href: "https://www.instagram.com/reel/DSSZR-bksiI/" },
-    },
-    {
-      id: "jharkhand-tourism",
-      client: "Jharkhand Tourism",
-      kind: "State tourism",
-      date: "May 2026",
-      title: "Jharkhand, from Ranchi to the world",
-      summary:
-        "At Jharkhand's first State Level Influencer Meet, in Patratu, the Tourism Department launched a portal that connects creators with the government to tell the state's story. Chabi was one of the 100+ creators there, to give its waterfalls, forests, food and people a bigger stage.",
-      stats: [
-        { figure: "100+", label: "creators at the meet" },
-        { figure: "2,214", label: "likes on Chabi's post" },
-      ],
-      image: {
-        src: "/images/work/jharkhand-tourism.webp",
-        alt: "Creators and officials at the Jharkhand Tourism State Level Influencers Meet",
-      },
-      link: { label: "See Chabi's post", href: "https://www.instagram.com/p/DYPtGunmEFq/" },
-      also: { label: "JTDC's post", href: "https://www.instagram.com/p/DYRCfAAjBby/" },
-    },
-  ] satisfies CaseStudy[],
-  strategyTitle: "Strategy and consulting",
-  strategy: [
-    {
-      id: "jewellery-jharkhand",
-      client: "Jewellery retailer, Jharkhand",
-      kind: "Local marketing",
-      date: "March 2025",
-      title: "Kuch Naya Sochte Hai: 50x footfall in a month",
-      summary:
-        "A new luxury flagship was putting off the tier-2 shoppers who built the brand. A SWOT analysis pointed back to its local roots: well-loved local faces, stories tied to regional traditions, and a message that it was still for them, on regional TV, in cinemas, in local papers and on billboards across the city.",
-      stats: [{ figure: "50x", label: "store footfall within a month" }],
-      image: {
-        src: "/images/work/jewellery-jharkhand.webp",
-        alt: "A mother and daughter laughing together in a jewellery showroom",
-      },
-      link: {
-        label: "Read the case study",
-        href: "https://www.linkedin.com/posts/chabi-gupta-cg_marketingstrategy-swotanalysis-retailconsulting-ugcPost-7301859308042874880-gDep/",
-      },
-    },
-    {
-      id: "microsoft-copilot",
-      client: "Microsoft",
-      kind: "Growth strategy",
-      date: "February 2024",
-      title: "Growing Copilot's free and Pro users",
-      summary:
-        "For Kelley MBA's Spring Intensive with Microsoft, Chabi's team planned how Copilot could win users and keep them. They built personas such as Carol the Alchemist, proposed reaching small businesses on LinkedIn, Instagram, TikTok and Pinterest with reasons to teach their own audiences, and made a directional ad.",
-      facts: ["Kelley School of Business, Indiana University"],
-      image: {
-        src: "/images/work/microsoft-copilot.webp",
-        alt: "A black-and-white frame from the team's directional ad: Chabi, captioned as an Instagram influencer",
-      },
-      link: {
-        label: "Read on LinkedIn",
-        href: "https://www.linkedin.com/posts/chabi-gupta-cg_microsoft-kelleyschoolofbusiness-iu-ugcPost-7168869625051525121-4osX/",
-      },
-    },
-    {
-      id: "ben-olive-mill",
-      client: "Ben Olive Mill, Greece",
-      kind: "Growth strategy",
-      date: "April 2023",
-      title: "An olive mill in Kalamata, made for families",
-      summary:
-        "A sustainable growth plan for an olive mill tour in Kalamata. The team found its biggest draw, wide farms where American families can slow down together, and turned the visit into a short documentary, scripted in fifteen minutes on the day.",
-      facts: ["Kelley School of Business, Indiana University"],
-      image: { src: "/images/work/ben-olive-mill.webp", alt: "Visitors at a tasting table among olive trees" },
-      link: {
-        label: "Read on LinkedIn",
-        href: "https://www.linkedin.com/posts/chabi-gupta-cg_greeceexperience-olivemill-teamwork-ugcPost-7053638544828887040-EVZp/",
-      },
-    },
-  ] satisfies CaseStudy[],
-  /** The page it started on. Follower and post counts as of October 2026. */
-  channel: {
-    kind: "Our own page",
-    date: "Since 2020",
-    handle: "@yourregularmom",
-    names: "Anita Gupta & Chabi Gupta",
-    title: "The page where it started",
-    summary:
-      "Chabi started @yourregularmom with her mother in 2020: family comedy in Bihari, from Ranchi and Chicago. A reel about a Gucci belt passed 4 million views, with a like from Priyanka Chopra. Brands from Big Bazaar to Netflix have worked with the page since.",
-    stats: [
-      { figure: "177K", label: "followers" },
-      { figure: "867", label: "posts" },
-      { figure: "35M", label: "views on the best reel" },
-    ],
-    image: {
-      src: "/images/work/yourregularmom.webp",
-      alt: "Chabi Gupta laughing beside her mother, Anita, who wears a yellow saree",
-    },
-    link: { label: "Follow on Instagram", href: "https://www.instagram.com/yourregularmom/" },
-  },
   press: {
     label: "As featured in",
     outlet: "Forbes India",
@@ -317,6 +223,652 @@ export const work = {
     },
   },
 };
+
+/**
+ * Selected work: each brand's case study, from the problem it came with to
+ * what happened. Videos are compressed copies in /public/videos, played on
+ * the site; the originals stay linked.
+ */
+export const cases = {
+  label: "Work",
+  title: "Brands and their case studies",
+  intro: "What each brand came to us with, what we made, and what it did.",
+  /** For screen readers: the row of cards. */
+  railLabel: "Case studies",
+  prev: "Previous case studies",
+  next: "More case studies",
+  more: "Read the case study",
+  /** On a card, what plays on its page: "Film · 1:18", "5 Reels". */
+  kinds: { film: "Film", reel: "Reel", reels: "Reels", clips: "clips" },
+  resultLabel: "Result",
+  /** Each case's own page (app/work/[id]). */
+  page: {
+    label: "Case study",
+    back: "All case studies",
+    backShort: "Work",
+    storyLabel: "The story",
+    story: {
+      challenge: "Challenge",
+      solution: "Creative solution",
+      results: "Results",
+    },
+    originals: "Where it ran",
+    next: "Next case study",
+    /** The case's video player (components/work/CasePlayer.tsx): button names, for screen readers and tooltips. */
+    player: {
+      /** On the video that started by itself, silently. Plays it from the start, with sound. */
+      sound: "Sound on",
+      play: "Play",
+      pause: "Pause",
+      replay: "Play again",
+      back: "Back 10 seconds",
+      forward: "Forward 10 seconds",
+      mute: "Mute",
+      unmute: "Unmute",
+      volume: "Volume",
+      seek: "Seek",
+      /** Between the two times when the seek bar is read out: "0:42 of 1:18". */
+      of: "of",
+      fullscreen: "Full screen",
+      exitFullscreen: "Exit full screen",
+      reels: "Reels",
+      next: "Next Reel",
+      /** For a case whose videos are clips from a post. */
+      clips: "Clips",
+      nextClip: "Next clip",
+      close: "Close",
+      nowPlaying: "Now playing",
+    },
+  },
+  items: [
+    {
+      id: "sunrise",
+      name: "Sunrise Masale",
+      line: "Brought a new masala range into eastern India’s kitchens, one Mummy at a time.",
+      facts: [
+        { label: "Client", value: "Sunrise Masale" },
+        { label: "Year", value: "2025–2026" },
+        { label: "Industry", value: "FMCG, food and spices" },
+        { label: "Capabilities", value: "Creator strategy, regional launch, content production" },
+      ],
+      result: "5.6 lakh+ views across four collab Reels",
+      challenge: [
+        "Masala is the hardest switch in an Indian kitchen. Families stay loyal to the brand their mother used, and big national names dominate the shelf. Sunrise was launching new masalas in eastern India and needed home cooks to notice them, trust them and try them. Ads alone wouldn’t get there.",
+      ],
+      solution: [
+        "We didn’t sell the masala; we handed it to the person whose approval matters most in an eastern Indian home: Mummy. Across five Reels on @yourregularmom, Sunrise became part of everyday cooking in Bihari-Jharkhandi homes: traditional prep on the rooftop, a weeknight tadka, the first taste test, the packet opened right on the stove. Every post was a collab with @sunrise_masale, and the top ones were crossposted to Facebook to reach the older home cooks who actually buy masala.",
+      ],
+      results: {
+        points: [
+          "5,67,284 views across four collab Reels",
+          "4,16,000+ accounts reached",
+          "17,000+ likes, 400+ shares and 350+ saves, which is people planning to cook with it, not just scrolling past",
+          "The best Reel reached 2,34,690 views and 12.7K likes, with a skip rate below the account average",
+        ],
+      },
+      media: {
+        kind: "reels",
+        videos: [
+          {
+            src: "/videos/sunrise-1.mp4",
+            hd: "/videos/hd/sunrise-1.mp4",
+            width: 1080,
+            height: 1920,
+            poster: "/videos/sunrise-1.webp",
+            length: "1:41",
+            caption: "September 2025",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/DOlcsdRklMn/" },
+          },
+          {
+            src: "/videos/sunrise-2.mp4",
+            hd: "/videos/hd/sunrise-2.mp4",
+            width: 1080,
+            height: 1920,
+            poster: "/videos/sunrise-2.webp",
+            length: "1:24",
+            caption: "October 2025, for Chhath",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/DQMbSL9kqRK/" },
+          },
+          {
+            src: "/videos/sunrise-3.mp4",
+            hd: "/videos/hd/sunrise-3.mp4",
+            width: 1080,
+            height: 1920,
+            poster: "/videos/sunrise-3.webp",
+            length: "1:30",
+            caption: "February 2026",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/DU407KeDlMX/" },
+          },
+          {
+            src: "/videos/sunrise-4.mp4",
+            hd: "/videos/hd/sunrise-4.mp4",
+            width: 1080,
+            height: 1920,
+            poster: "/videos/sunrise-4.webp",
+            length: "1:26",
+            caption: "September 2026",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/DdjcFBYuNcE/" },
+          },
+          {
+            src: "/videos/sunrise-5.mp4",
+            hd: "/videos/hd/sunrise-5.mp4",
+            width: 1080,
+            height: 1920,
+            poster: "/videos/sunrise-5.webp",
+            length: "1:11",
+            caption: "September 2026",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/Dd30CgAuP8j/" },
+          },
+        ],
+      },
+      card: {
+        image: "/images/work/sunrise-chhath.webp",
+        alt: "Anita Gupta in an orange saree, preparing for Chhath",
+        position: "50% 38%",
+      },
+      links: [],
+    },
+    {
+      id: "horlicks",
+      name: "Horlicks",
+      line: "We turned an in-store offer into a day with the grandchild.",
+      facts: [
+        { label: "Client", value: "Horlicks, a Hindustan Unilever brand" },
+        { label: "Year", value: "2025" },
+        { label: "Industry", value: "FMCG, nutrition drinks" },
+        { label: "Capabilities", value: "Creator partnership, family storytelling, content production" },
+        { label: "Offer", value: "A free Horlicks Classic Malt Milkshake with the 500 g jar" },
+      ],
+      result: "An in-store offer, told as a family day",
+      challenge: [
+        "Horlicks had a simple offer on its 500 g jar: a free Horlicks Classic Malt Milkshake. But an offer printed on a pack only works if shoppers notice it, and a band on a jar is easy to miss on a crowded shelf. An ad that shouts “free” is just as easy to scroll past. Horlicks needed the families who buy the jar to hear about the offer from someone they trust, and then look for it at their local store.",
+      ],
+      solution: [
+        "We didn’t make an ad about a freebie. We made a day with the grandchild. In the reel, titled on screen “bonding day with GrandChild”, the little one arrives at Mummy’s door with a backpack, sits on the kitchen counter while she makes pancakes, and gets a Horlicks milkshake with breakfast. The day ends with an evening snack and playtime.",
+        "The offer gets one clear line on screen, “Buy 500g Horlicks Jar = Milkshake FREE!”, over the milkshake on the breakfast tray and then a close-up of the jar’s “FREE” band, so viewers know exactly what to look for. The caption says it the way a grandparent would: “If you spot this offer at your local store, it’s worth picking up.” The reel tagged Horlicks India and was marked #ad.",
+      ],
+      results: {
+        points: ["751 likes and 10 comments on @yourregularmom"],
+        text: [
+          "Horlicks got its offer told the way families pass on a good deal: shown in use at home, with one line on what to buy and where to look for it.",
+        ],
+      },
+      media: {
+        kind: "reels",
+        videos: [
+          {
+            src: "/videos/horlicks.mp4",
+            hd: "/videos/hd/horlicks.mp4",
+            width: 1080,
+            height: 1920,
+            poster: "/videos/horlicks.webp",
+            length: "1:02",
+            caption: "December 2025",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/DSSZR-bksiI/" },
+          },
+        ],
+      },
+      card: {
+        image: "/images/work/horlicks.webp",
+        alt: "A small child beside a jar of Horlicks",
+        position: "50% 60%",
+      },
+      links: [{ label: "Watch on Instagram", href: "https://www.instagram.com/reel/DSSZR-bksiI/" }],
+    },
+    {
+      id: "saraswaan",
+      name: "Saraswaan Jewellers",
+      line: "Turned an intimidating new flagship into the talk of the town.",
+      facts: [
+        {
+          label: "Client",
+          value: "Saraswaan, from the house of Maa Gayatri Jewellers, a leading jewellery retailer in Jharkhand",
+        },
+        { label: "Year", value: "2025" },
+        { label: "Industry", value: "Retail, jewellery" },
+        {
+          label: "Capabilities",
+          value: "Brand strategy, integrated campaign, local influencer partnerships, creative",
+        },
+      ],
+      result: "50x store footfall in one month",
+      challenge: [
+        "The brand ran several stores across Jharkhand’s tier-2 cities, each serving a different kind of customer. Its new high-end flagship was a big investment, but it backfired. Loyal customers felt the brand had left its homegrown roots, new customers assumed they couldn’t afford it, and footfall dropped. With that much capital already spent, the flagship had to work, and it couldn’t pull customers away from the other stores.",
+      ],
+      solution: [
+        "We found the brand’s real advantage wasn’t luxury. It was local trust that went back generations. So we launched “Kuch Naya Sochte Hai”, a campaign that presented the flagship as the next chapter of a story Jharkhand already knew. Local personalities people love wore the jewellery, which was tied to regional traditions and positioned as premium but approachable. The campaign ran across regional TV and news channels, cinemas, local newspapers and billboards around the city, so every channel carried the same message.",
+      ],
+      results: {
+        text: [
+          "Store footfall grew 50x within one month, and the campaign became the talk of the town. Customers came to see the flagship as part of the brand they already trusted. Each store kept its own customers, so the flagship grew the business without taking sales from the other locations.",
+        ],
+      },
+      media: {
+        kind: "film",
+        video: {
+          src: "/videos/saraswaan.mp4",
+          hd: "/videos/hd/saraswaan.mp4",
+          width: 1280,
+          height: 720,
+          poster: "/images/work/jewellery-jharkhand.webp",
+          length: "1:18",
+          caption: "Kuch Naya Sochte Hai",
+          original: { label: "Read on LinkedIn", href: "https://lnkd.in/p/dvyHUbum" },
+        },
+      },
+      card: {
+        image: "/images/work/jewellery-jharkhand.webp",
+        alt: "A mother and daughter laughing together in a jewellery showroom",
+      },
+      links: [{ label: "Read on LinkedIn", href: "https://lnkd.in/p/dvyHUbum" }],
+    },
+    {
+      id: "ben-olive-mill",
+      name: "Ben Olive Mill",
+      line: "We made a working olive farm a destination for American families.",
+      facts: [
+        { label: "Client", value: "Ben Olive Mill – Tour & Tasting" },
+        { label: "Year", value: "2023" },
+        { label: "Industry", value: "Agritourism, hospitality" },
+        { label: "Capabilities", value: "Growth strategy, positioning, documentary film, partnerships" },
+      ],
+      result: "A farm reframed as a family escape",
+      challenge: [
+        "Visitors come to Greece for its islands and ruins. Few plan a trip around a working olive mill in Kalamata. Ben Olive Mill had an exceptional experience to offer, but nothing gave travellers a reason to go out of their way for it.",
+      ],
+      solution: [
+        "We stopped selling the olive oil and started selling the place. Research showed what American tourists value most: a slow picnic in the open and the ritual of tasting olive oil where it’s made. We created a documentary around those two moments, scripted and filmed on location in a single visit. To turn interest into visits, we set up partnerships with local hotels and hostels, putting the mill on the itinerary of travellers already in town.",
+      ],
+      results: {
+        text: [
+          "The mill now has a clear story, a film that tells it, and a local network that sends visitors its way. All of it is aimed at the guests most likely to book: American families looking for a quieter Greece.",
+        ],
+      },
+      media: {
+        kind: "film",
+        video: {
+          src: "/videos/ben-olive-mill.mp4",
+          hd: "/videos/hd/ben-olive-mill.mp4",
+          width: 1280,
+          height: 720,
+          poster: "/images/work/ben-olive-mill.webp",
+          length: "2:49",
+          caption: "The documentary",
+          original: {
+            label: "Read on LinkedIn",
+            href: "https://www.linkedin.com/posts/chabi-gupta-cg_greeceexperience-olivemill-teamwork-ugcPost-7053638544828887040-EVZp/",
+          },
+        },
+      },
+      card: {
+        image: "/images/work/ben-olive-mill.webp",
+        alt: "Visitors at a tasting table among olive trees",
+      },
+      links: [
+        {
+          label: "Read on LinkedIn",
+          href: "https://www.linkedin.com/posts/chabi-gupta-cg_greeceexperience-olivemill-teamwork-ugcPost-7053638544828887040-EVZp/",
+        },
+      ],
+    },
+    {
+      id: "microsoft-copilot",
+      name: "Microsoft Copilot",
+      line: "We positioned Copilot as the business partner every Trailblazer needs.",
+      facts: [
+        { label: "Client", value: "Microsoft" },
+        { label: "Year", value: "2024" },
+        { label: "Industry", value: "Technology, generative AI" },
+        { label: "Capabilities", value: "Growth strategy, audience personas, go-to-market, creative direction" },
+        { label: "Engagement", value: "Kelley MBA Spring Intensive" },
+      ],
+      result: "A growth and retention plan for Copilot Free and Pro",
+      challenge: [
+        "Copilot was one of the most capable AI assistants on the market, built into the tools millions of people already use every day. But being capable doesn’t get people to adopt it. Microsoft needed to grow its user base across the Free and Pro tiers, then keep those users coming back as competitors fought for the same attention.",
+      ],
+      solution: [
+        "We focused on one audience: the Trailblazers. They are 25 to 34, freelancing or running a small business, online seven hours a day, and wearing every hat in the company. Our persona, “Carol the Alchemist,” had big ambitions and no team to share the load.",
+        "We built the marketing strategy around her and turned Copilot from a tool into the hero of her story. It wasn’t another app to learn. It was a real co-pilot that drafts the emails, builds the decks, crunches the numbers and keeps the business moving while she steers. To reach Trailblazers where they already spend time, we planned a go-to-market across LinkedIn, Instagram, TikTok and Pinterest. Small business owners would be rewarded for showing their audiences how they run their work with Copilot beside them. A directional film, made in a three-day, sixteen-hour creative sprint, brought the idea to life.",
+      ],
+      results: {
+        text: [
+          "Microsoft received a persona-led growth strategy built around its highest-potential audience. It included a peer-driven SME advocacy model and one clear promise for both adoption and retention: run your business with a co-pilot.",
+        ],
+      },
+      media: {
+        kind: "film",
+        video: {
+          src: "/videos/hd/microsoft-copilot.mp4",
+          width: 960,
+          height: 540,
+          poster: "/images/work/microsoft-copilot.webp",
+          length: "1:37",
+          caption: "The directional film",
+          original: {
+            label: "Read on LinkedIn",
+            href: "https://www.linkedin.com/posts/chabi-gupta-cg_microsoft-kelleyschoolofbusiness-iu-ugcPost-7168869625051525121-4osX/",
+          },
+        },
+      },
+      card: {
+        image: "/images/work/microsoft-copilot.webp",
+        alt: "A black-and-white frame from the team’s directional film: Chabi, captioned as an Instagram influencer",
+      },
+      links: [
+        {
+          label: "Read on LinkedIn",
+          href: "https://www.linkedin.com/posts/chabi-gupta-cg_microsoft-kelleyschoolofbusiness-iu-ugcPost-7168869625051525121-4osX/",
+        },
+      ],
+    },
+    {
+      id: "netflix-maa-behen",
+      name: "Netflix India: Maa Behen",
+      line: "We brought a real mother and daughter to a film about mothers and daughters.",
+      facts: [
+        { label: "Client", value: "Netflix India" },
+        { label: "Year", value: "2026" },
+        { label: "Industry", value: "Entertainment, streaming" },
+        { label: "Capabilities", value: "Creator partnership, scriptwriting, content production" },
+      ],
+      result: "1M+ reach and 2,000+ shares",
+      challenge: [
+        "Maa Behen was a film about family, starring Madhuri Dixit, Triptii Dimri and Dharna Durga. Netflix needed its pre-launch content to feel as real as the relationships on screen. Big follower counts were easy to find. A mother-daughter bond that audiences already believed in was not.",
+      ],
+      solution: [
+        "Netflix didn’t need another influencer. It needed the real thing. @yourregularmom has spent years building an audience of 200,000 from a town in Jharkhand, with one mother, one daughter and banter that has never been scripted to look real, because it is. We wrote reels that put that dynamic in the same room as the film’s cast and let the two families meet. In our humour, our language and our home, Bollywood’s biggest names met the kind of mother every viewer recognises. The script landed so well that Madhuri Dixit broke into laughter on camera.",
+      ],
+      results: {
+        points: [
+          "1M+ accounts reached",
+          "2,000+ shares, as audiences passed it on to their own mothers and sisters",
+          "Maa Behen rose to #2 on Netflix’s Global Top 10 Non-English Films and trended in 15 countries",
+        ],
+        text: [
+          "The campaign proved what we had always believed. Regional is not niche. It’s loyal, and global brands are starting to notice.",
+        ],
+      },
+      media: {
+        kind: "film",
+        video: {
+          src: "/videos/netflix-maa-behen.mp4",
+          hd: "/videos/hd/netflix-maa-behen.mp4",
+          width: 1920,
+          height: 1080,
+          poster: "/images/work/netflix-maa-behen.webp",
+          length: "1:55",
+          caption: "With Madhuri Dixit and Triptii Dimri",
+          original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/DZUgpaBuS41/" },
+        },
+      },
+      card: {
+        image: "/images/work/netflix-maa-behen.webp",
+        alt: "Madhuri Dixit laughing with Triptii Dimri and Dharna Durga in front of a Netflix Maa Behen poster",
+      },
+      links: [
+        {
+          label: "Read on LinkedIn",
+          href: "https://www.linkedin.com/feed/update/urn:li:activity:7476718806867046400/",
+        },
+        { label: "Watch on Instagram", href: "https://www.instagram.com/reel/DZUgpaBuS41/" },
+      ],
+    },
+    {
+      id: "india-fights-corona",
+      name: "Ministry of Information & Broadcasting: #IndiaFightsCorona",
+      line: "Our most viral reel became the Government of India’s vaccine message.",
+      facts: [
+        { label: "Featured by", value: "Ministry of Information & Broadcasting, Government of India" },
+        { label: "Year", value: "2021" },
+        { label: "Industry", value: "Public health, government communications" },
+        { label: "Capabilities", value: "Original content, cultural storytelling, organic virality" },
+      ],
+      result: "1.7M views in two days, then a national vaccine campaign",
+      challenge: [
+        "In 2021, India needed hundreds of millions of people to trust a vaccine. Facts and figures couldn’t do it alone. Messages that work at that scale tend to feel personal, familiar and impossible to ignore.",
+      ],
+      solution: [
+        "We weren’t trying to sell anything. We filmed something every Indian household knows: a mother finding out what her daughter spent. In “My DPS Belt,” Mummy inspects a ₹35,000 Gucci belt, says it looks just like a school uniform belt, and delivers the lecture every child has heard about wasting money. There was no script and no brief, just a real reaction from a real Bihari mother.",
+        "It became part of everyday conversation. And once it was part of the conversation, it became something the Government could use. The Ministry of Information & Broadcasting turned the moment into a #IndiaFightsCorona creative. The ₹35,000 belt makes Mummy angry. The free vaccine makes Mummy happy and keeps the whole family safe.",
+      ],
+      results: {
+        points: [
+          "The reel crossed 1.7 million Instagram views within two days of posting",
+          "Picked up by national media, with viewers saying the reaction was exactly how their own mothers respond to an expensive purchase",
+          "Adopted by the Government of India for COVID-19 vaccine awareness and shared across the Ministry’s official channels",
+        ],
+        text: [
+          "When a government chooses your content to reach a billion people, the work has gone well beyond entertainment.",
+        ],
+      },
+      media: {
+        kind: "reels",
+        videos: [
+          {
+            src: "/videos/india-fights-corona.mp4",
+            hd: "/videos/hd/india-fights-corona.mp4",
+            width: 640,
+            height: 1136,
+            poster: "/videos/india-fights-corona.webp",
+            length: "1:04",
+            caption: "“My DPS Belt”, June 2021",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/tv/CQCHH_ag69e/" },
+          },
+        ],
+        image: {
+          src: "/images/work/india-fights-corona.webp",
+          alt: "The Ministry of Information & Broadcasting’s #IndiaFightsCorona post: a ₹35,000 belt makes Mummy angry; the vaccine, free at government centres, makes Mummy happy and keeps the entire family safe.",
+          caption: "The Ministry’s #IndiaFightsCorona post",
+          original: { label: "Open on X", href: "https://x.com/COVIDNewsByMIB/status/1406228355037286400" },
+        },
+      },
+      card: {
+        image: "/images/work/india-fights-corona.webp",
+        alt: "The Ministry of Information & Broadcasting’s #IndiaFightsCorona post, with Anita Gupta and the ₹35,000 belt",
+        position: "50% 0%",
+      },
+      links: [
+        { label: "The Ministry’s post", href: "https://x.com/COVIDNewsByMIB/status/1406228355037286400" },
+        {
+          label: "Inshorts",
+          href: "https://inshorts.com/en/news/govt-uses-viral-%E2%82%B935k-gucci-belt-makes-mom-angry-meme-for-covid-vaccine-awareness-1624111577740",
+        },
+        {
+          label: "Free Press Journal",
+          href: "https://www.freepressjournal.in/viral/35000-ka-belt-this-video-of-mothers-hilarious-reaction-to-daughters-gucci-accessory-is-the-funniest-thing-on-internet-today",
+        },
+        {
+          label: "SheThePeople",
+          href: "https://www.shethepeople.tv/viral-video/viral-video-desi-mom-reaction-daughter-gucci-belt",
+        },
+      ],
+    },
+    {
+      id: "jharkhand-tourism",
+      name: "Jharkhand Tourism: State Level Influencers Meet",
+      line: "When Jharkhand first brought its own creators together to tell the state’s story, we were in the room.",
+      facts: [
+        {
+          label: "Hosted by",
+          value: "Department of Tourism, Arts, Culture, Sports & Youth Affairs, Government of Jharkhand",
+        },
+        { label: "Year", value: "2026" },
+        { label: "Industry", value: "State tourism, government communications" },
+        { label: "Capabilities", value: "Creator storytelling, event coverage, government collab" },
+        { label: "Event", value: "Jharkhand’s first State Level Influencers Meet, Patratu" },
+      ],
+      result: "At the state’s first creator meet, then a collab post with Jharkhand Tourism",
+      challenge: [
+        "Jharkhand has waterfalls, forests, tribal art and festivals, but it is still a small name on India’s travel map. In 2024 it drew 1.83% of India’s domestic tourist visits and just 0.22% of its foreign ones.",
+        "The state knew where the gap was. People now find places to visit on social media, and Jharkhand’s presence there was still thin. Its Tourism Minister said as much at the meet. A brochure wouldn’t change that. Voices from Jharkhand that people already trust could.",
+      ],
+      solution: [
+        "On 11 May 2026, the Department of Tourism held Jharkhand’s first State Level Influencers Meet, at Paryatan Vihar in Patratu. Sudivya Kumar, the state’s Tourism Minister at the time, told the room the state could have invited creators from the big metros. It chose its own. He launched the Influencer Engagement Portal there, so creators can work with the department formally. Chabi, who was born and raised in Jharkhand, was one of more than 80 creators at the meet.",
+        "We covered the day the way our audience knows us: first person, from the inside. Chabi took her followers through it, from the steps of Paryatan Vihar to the Minister’s address, in a 20-slide post of eight videos and twelve photos, tagged to @jharkhandtourism. The official post about the meet, on @jharkhandtourism, went out as a collab with @yourregularmom, so it ran on the state’s page and on ours.",
+      ],
+      results: {
+        points: [
+          "One of more than 80 creators at the state’s first State Level Influencers Meet",
+          "2,200+ likes and 23 comments on our 20-slide post from the day",
+          "2,500+ likes on the official meet post on @jharkhandtourism, a collab with @yourregularmom",
+          "In June, a meeting with Tourism Secretary Mukesh Kumar and the Director of Tourism",
+        ],
+        text: [
+          "This is the start of the work, not the end. As Chabi wrote after that meeting, “Jharkhand doesn’t have a tourism problem. It has a storytelling problem.” The destinations are already here. Now the state’s own creators have a way in to tell their story.",
+        ],
+      },
+      media: {
+        kind: "reels",
+        clips: true,
+        videos: [
+          {
+            src: "/videos/jharkhand-tourism-1.mp4",
+            hd: "/videos/hd/jharkhand-tourism-1.mp4",
+            width: 720,
+            height: 960,
+            poster: "/videos/jharkhand-tourism-1.webp",
+            length: "0:10",
+            caption: "Arriving at the meet, May 2026",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/p/DYPtGunmEFq/" },
+          },
+          {
+            src: "/videos/jharkhand-tourism-2.mp4",
+            hd: "/videos/hd/jharkhand-tourism-2.mp4",
+            width: 720,
+            height: 960,
+            poster: "/videos/jharkhand-tourism-2.webp",
+            length: "0:12",
+            caption: "Paryatan Vihar, Patratu",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/p/DYPtGunmEFq/" },
+          },
+          {
+            src: "/videos/jharkhand-tourism-3.mp4",
+            hd: "/videos/hd/jharkhand-tourism-3.mp4",
+            width: 720,
+            height: 960,
+            poster: "/videos/jharkhand-tourism-3.webp",
+            length: "0:54",
+            caption: "The Tourism Minister’s address",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/p/DYPtGunmEFq/" },
+          },
+          {
+            src: "/videos/jharkhand-tourism-4.mp4",
+            hd: "/videos/hd/jharkhand-tourism-4.mp4",
+            width: 720,
+            height: 960,
+            poster: "/videos/jharkhand-tourism-4.webp",
+            length: "1:00",
+            caption: "On Jharkhand as a monsoon destination",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/p/DYPtGunmEFq/" },
+          },
+        ],
+      },
+      card: {
+        image: "/images/work/jharkhand-tourism-meet.webp",
+        alt: "Chabi Gupta in front of the State Level Influencers Meet 2026 backdrop at Paryatan Vihar, Patratu",
+        position: "50% 30%",
+      },
+      links: [
+        { label: "Our post from the meet", href: "https://www.instagram.com/p/DYPtGunmEFq/" },
+        { label: "Jharkhand Tourism collab post", href: "https://www.instagram.com/p/DYRCfAAjBby/" },
+        {
+          label: "Read on LinkedIn",
+          href: "https://www.linkedin.com/posts/chabi-gupta-cg_jharkhandtourism-digitalstorytelling-creatoreconomy-activity-7474064422035173377-df1O",
+        },
+      ],
+    },
+    {
+      id: "yourregularmom",
+      name: "@yourregularmom",
+      line: "Where Crorepreneur started: a mother, a daughter and the way they talk at home.",
+      facts: [
+        { label: "Client", value: "Our own page, run by Anita Gupta and Chabi Gupta" },
+        { label: "Year", value: "2020–2026" },
+        { label: "Industry", value: "Creator media, family comedy" },
+        { label: "Capabilities", value: "Original content, regional storytelling, audience building" },
+        { label: "Featured by", value: "Forbes India (2022), Indian Idol 13 (2023)" },
+      ],
+      result: "From 6.5K to 177K followers",
+      challenge: [
+        "Chabi started @yourregularmom in 2020 with her mother, Anita. Like any new page, it had no audience. What it had was a family home in Ranchi and the way the two of them talk to each other, in Bihari. By mid-June 2021, the page had 6.5K followers and seven videos.",
+      ],
+      solution: [
+        "We didn’t script Mummy. Chabi sets up an everyday moment: interrupting her serial, asking her about an emoji, showing her a new purchase. Anita reacts the way she always does. She speaks in Bihari, using words like ‘chikanjibhi’ for a foodie and ‘latkhor’ for someone stubborn, and her lines go on screen as she says them. As Anita told Forbes India, “I don’t pretend to be anyone else, what you see is who I am.”",
+        "Then we kept going. Seven videos became 19 within three weeks of “My DPS Belt”. By October 2026 there were 872 posts: Durga Puja in Ranchi, Chhath, trips to Nanighar in Patna, and life between Ranchi and Chicago. When brands came, they came into the same home.",
+      ],
+      results: {
+        points: [
+          "6.5K followers in mid-June 2021, 62.4K by 3 July, and 177K with 872 posts in October 2026",
+          "“My DPS Belt” passed 4 million views, drew a like from Priyanka Chopra, and within a week became the Government of India’s #IndiaFightsCorona vaccine message",
+          "Featured by Forbes India in its 2022 Top Digital Stars coverage, and on Indian Idol 13 in January 2023, where Sony’s post called Mummy ‘Gucci waali aunty’",
+          "Brands from Big Bazaar in 2021 to Sunrise Masale, Horlicks and Netflix India have run campaigns on the page",
+        ],
+        text: [
+          "This is where Crorepreneur began. Every campaign we make still starts with what this page taught us: people trust voices that sound like home.",
+        ],
+      },
+      media: {
+        kind: "reels",
+        videos: [
+          {
+            src: "/videos/yourregularmom-2.mp4",
+            hd: "/videos/hd/yourregularmom-2.mp4",
+            width: 720,
+            height: 1280,
+            poster: "/videos/yourregularmom-2.webp",
+            length: "0:30",
+            caption: "June 2021",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/CQSk-pBASRw/" },
+          },
+          {
+            src: "/videos/yourregularmom-1.mp4",
+            hd: "/videos/hd/yourregularmom-1.mp4",
+            width: 720,
+            height: 1280,
+            poster: "/videos/yourregularmom-1.webp",
+            length: "0:25",
+            caption: "September 2021",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/CUU7jnXl4f5/" },
+          },
+          {
+            src: "/videos/yourregularmom-3.mp4",
+            hd: "/videos/hd/yourregularmom-3.mp4",
+            width: 640,
+            height: 1138,
+            poster: "/videos/yourregularmom-3.webp",
+            length: "0:30",
+            caption: "August 2021, for Big Bazaar",
+            original: { label: "Open on Instagram", href: "https://www.instagram.com/reel/CSEXMWJjyNV/" },
+          },
+        ],
+      },
+      card: {
+        image: "/images/work/yourregularmom.webp",
+        alt: "Chabi Gupta laughing beside her mother, Anita, who wears a yellow saree",
+      },
+      links: [
+        { label: "Follow on Instagram", href: "https://www.instagram.com/yourregularmom/" },
+        {
+          label: "Forbes India",
+          href: "https://www.forbesindia.com/article/2022-india039s-top-digital-stars/from-bihari-to-kashmiri-the-rise-and-rise-of-regional-indian-digital-content-stars/78465/1",
+        },
+        {
+          label: "SheThePeople",
+          href: "https://www.shethepeople.tv/viral-video/gucci-belt-mom-viral-video-daughter-35k-saree/",
+        },
+        {
+          label: "Zee News",
+          href: "https://zeenews.india.com/hindi/off-beat/funny-video-of-famous-regular-mom-showing-ashirwad-emoji-on-whatsapp-instagram-reels-video/931460",
+        },
+        {
+          label: "India.com",
+          href: "https://www.india.com/viral/viral-video-daughter-disturbs-mom-watching-anupamaa-gets-hilarious-scolding-for-it-watch-5047976/",
+        },
+        { label: "Indian Idol 13, on Instagram", href: "https://www.instagram.com/reel/CnYzNiGhBCe/" },
+      ],
+    },
+  ] satisfies CaseStudy[],
+} as const;
 
 /** The one service: hyperlocal creator campaigns, for companies running campaigns. */
 export const capabilities = {
@@ -420,9 +972,18 @@ export const founderSection = {
   aboutLink: "Read our story",
   follow: "Follow on Instagram",
   principles: [
-    { name: "Senior hands", text: "The people who pitch are the people who do the work." },
-    { name: "Creators first", text: "We pay fairly, brief clearly and let creators sound like themselves." },
-    { name: "Revenue first", text: "Every report opens with what the business earned." },
+    {
+      name: "Senior hands",
+      text: "The people who pitch are the people who do the work.",
+    },
+    {
+      name: "Creators first",
+      text: "We pay fairly, brief clearly and let creators sound like themselves.",
+    },
+    {
+      name: "Revenue first",
+      text: "Every report opens with what the business earned.",
+    },
   ],
 } as const;
 
@@ -441,8 +1002,14 @@ export const enquiry = {
     name: { label: "Your name", placeholder: "Full name" },
     email: { label: "Work email", placeholder: "you@brand.com" },
     company: { label: "Brand or company", placeholder: "Brand name" },
-    website: { label: "Website or Instagram", placeholder: "brand.com or @brand" },
-    cities: { label: "Cities or markets", placeholder: "Mumbai, Delhi, the US, the UK…" },
+    website: {
+      label: "Website or Instagram",
+      placeholder: "brand.com or @brand",
+    },
+    cities: {
+      label: "Cities or markets",
+      placeholder: "Mumbai, Delhi, the US, the UK…",
+    },
     phone: { label: "Phone or WhatsApp", placeholder: "+91" },
     message: {
       label: "About the campaign",
@@ -514,9 +1081,18 @@ export const enquiryEmails = {
     },
     nextTitle: "What happens next",
     next: [
-      { title: "We read your brief", text: "Who you want to reach, where, and what success looks like." },
-      { title: "We reply within 24 hours", text: "With first ideas, and anything else we need to know." },
-      { title: "We plan it together", text: "A short call to shape the campaign and the creators behind it." },
+      {
+        title: "We read your brief",
+        text: "Who you want to reach, where, and what success looks like.",
+      },
+      {
+        title: "We reply within 24 hours",
+        text: "With first ideas, and anything else we need to know.",
+      },
+      {
+        title: "We plan it together",
+        text: "A short call to shape the campaign and the creators behind it.",
+      },
     ],
     summaryTitle: "What you sent us",
     signOff: "Warm regards,",
@@ -590,7 +1166,13 @@ export const about = {
     label: "Tech behind Crorepreneur",
     name: "Shubham Kumar Agrawal",
     text: "An IIT grad, AI enthusiast, and tech innovator, Shubham has worked with industry giants like Turing, Brane, and Shamrock AI, building cutting-edge products and AI-driven solutions from the ground up. With expertise in AI, automation, and end-to-end product development, he blends technology with creativity to turn ambitious ideas into scalable solutions. As the tech brain behind Crorepreneur, he drives the AI-powered tools, intelligent systems, and technology that fuel its campaigns and digital innovation.",
-    link: { label: "LinkedIn", href: "https://www.linkedin.com/in/shubham-kumar-agrawal-45311b171/" },
+    links: [
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/shubham-kumar-agrawal-45311b171/" },
+      { label: "Instagram", href: "https://www.instagram.com/number1theory/" },
+    ],
+    /** His studio portrait, cropped to 4:5 like hers. */
+    image: { src: "/images/team/shubham.webp", alt: "Shubham Kumar Agrawal" },
+    badge: "IITian",
   },
   beliefsLabel: "Beliefs",
   beliefsTitle: "What we believe",

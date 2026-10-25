@@ -1,5 +1,5 @@
-import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
+import { preload } from "react-dom";
 import { founder, hero, site } from "@/content/site";
 import { asset } from "@/lib/assets";
 import { Button, TextLink } from "@/components/ui/Button";
@@ -20,9 +20,19 @@ import { ENQUIRY_FALLBACK_HREF } from "@/lib/enquiry";
 export function Hero() {
   const { image } = founder;
   const src = asset(image.src);
+  // The portrait is the largest thing on the first screen, so it is fetched
+  // as early as possible, at the size the screen needs.
+  const srcSet = [...image.smaller.map((copy) => `${asset(copy.src)} ${copy.width}w`), `${src} ${image.width}w`].join(
+    ", ",
+  );
+  const sizes = "(min-width: 64rem) 48.5rem, min(92vw, 20rem)";
+  preload(src, { as: "image", imageSrcSet: srcSet, imageSizes: sizes, fetchPriority: "high" });
 
   return (
-    <section id="top" className="scheme-ink cover relative isolate flex min-h-svh flex-col overflow-clip">
+    <section
+      id="top"
+      className="scheme-ink cover relative isolate flex min-h-svh flex-col overflow-clip lg:min-h-[min(100svh,calc(75vw+8rem))]"
+    >
       <div aria-hidden="true" className="cover-glow" />
 
       <div className="shell relative grid flex-1 grid-cols-[minmax(0,1fr)] pt-[calc(var(--header-h)+1.5rem)] lg:grid-cols-12 lg:gap-x-6 lg:pt-[calc(var(--header-h)+min(2.5rem,2svh))]">
@@ -34,14 +44,14 @@ export function Hero() {
           >
             {hero.eyebrow}
           </p>
-          <h1 className="cover-headline display mt-5 text-[clamp(3.6rem,16vw,5.5rem)] leading-[0.95] text-fg lg:mt-[min(1.75rem,2.2svh)] lg:text-[clamp(4rem,min(8.6vw,14svh),8.5rem)] lg:leading-[0.92]">
+          <h1 className="cover-headline display mt-5 text-[clamp(2.75rem,min(16vw,15svh),5.5rem)] leading-[0.95] text-fg lg:mt-[min(1.75rem,2.2svh)] lg:text-[clamp(4rem,min(8.6vw,14svh),8.5rem)] lg:leading-[0.92]">
             <span className="sr-only">
               {site.name}. {hero.headline.join(" ")}
             </span>
-            <TypeLines lines={hero.headline} start={350} />
+            <TypeLines lines={hero.headline} />
           </h1>
 
-          <div className="mt-10 lg:mt-auto">
+          <div className="mt-8 lg:mt-auto">
             <p
               className="load-fade max-w-[30rem] text-[1.0625rem] leading-[1.6] text-fg-2"
               style={{ "--d": "450ms" } as CSSProperties}
@@ -49,7 +59,7 @@ export function Hero() {
               {highlight(hero.body, hero.bodyHighlight)}
             </p>
             <div
-              className="load-fade mt-8 flex flex-wrap items-center gap-x-7 gap-y-3 lg:mt-[min(2rem,3.5svh)]"
+              className="load-fade mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 lg:mt-[min(2rem,3.5svh)]"
               style={{ "--d": "560ms" } as CSSProperties}
             >
               <Button href={ENQUIRY_FALLBACK_HREF} enquiry>
@@ -64,24 +74,25 @@ export function Hero() {
 
         {/* ---- The founder, in the spotlight. Her card sits under the photo on
              phones and tablets, and on its lower corner on wider screens. */}
-        <div className="relative mt-12 flex justify-center lg:col-span-5 lg:mt-0 lg:items-end lg:justify-end">
+        <div className="relative mt-8 flex justify-center lg:col-span-5 lg:mt-0 lg:items-end lg:justify-end">
           <div data-cover-portrait className="relative flex w-full origin-bottom flex-col items-center lg:w-auto">
             <div className="cover-portrait relative" style={{ aspectRatio: image.aspect }}>
               <div className="cover-figure portrait-cutout relative size-full">
-                <Image
+                {/* A plain img for its srcset: the site is static files, which next/image can't resize. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={src}
+                  srcSet={srcSet}
+                  sizes={sizes}
                   alt={image.alt}
-                  fill
-                  unoptimized
-                  loading="eager"
                   fetchPriority="high"
-                  sizes="(min-width: 64rem) 36rem, 80vw"
-                  className="object-contain object-bottom"
+                  decoding="async"
+                  className="absolute inset-0 size-full object-contain object-bottom"
                 />
               </div>
             </div>
             <div
-              className="load-fade relative mt-3 w-full max-w-[30rem] rounded-2xl border border-line bg-[rgba(10,10,12,0.66)] px-4 py-3 backdrop-blur-md lg:absolute lg:bottom-8 lg:-right-2 lg:mt-0 lg:w-auto lg:max-w-none"
+              className="load-fade relative mt-3 w-full max-w-[20rem] rounded-2xl border border-line bg-[rgba(10,10,12,0.66)] px-4 py-3 backdrop-blur-md lg:absolute lg:bottom-8 lg:-right-2 lg:mt-0 lg:w-auto lg:max-w-none"
               style={{ "--d": "760ms" } as CSSProperties}
             >
               <p className="serif text-[1.375rem] leading-none text-fg">{founder.name}</p>

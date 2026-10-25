@@ -12,8 +12,9 @@ sections in turn, with a dusty violet accent. On a laptop, every section
 fits one screen.
 
 Built with Next.js (App Router), React, TypeScript and Tailwind CSS v4.
-Scroll animation with GSAP ScrollTrigger and Lenis smooth scrolling; UI
-motion with Motion; icons from Lucide.
+Scroll animation with GSAP ScrollTrigger and Lenis smooth scrolling, loaded
+after the first paint; the small UI animations are plain CSS; icons from
+Lucide.
 
 ## Run it
 
@@ -47,6 +48,14 @@ assets, which is free, with unlimited requests, and allows business sites.
   then add it in the Worker under **Settings**, **Domains & Routes**.
 - **Email:** with the domain on Cloudflare, Email Routing can forward
   `hello@crorepreneur.com`, where enquiries go, to any inbox.
+- **Videos:** Safari, on iPhones and Macs, plays a video only if the server
+  sends it in pieces when asked (a Range request, answered with 206 Partial
+  Content), and Cloudflare's static file server always sends the whole file.
+  So `/videos/*` goes through the Worker (`run_worker_first` in
+  `wrangler.jsonc`), which keeps each video in Cloudflare's cache and sends
+  the piece asked for (`video` in `worker/index.ts`). Until a data centre
+  has its copy, the piece is cut from the file as it streams past, so the
+  Worker never holds a whole video in memory.
 
 A static export can't use anything that needs a server: Server Actions,
 route handlers that read the request, rewrites, redirects, headers, proxy
@@ -55,8 +64,8 @@ route handlers that read the request, rewrites, redirects, headers, proxy
 
 ## The work
 
-Crorepreneur's real work is in two sections, with content under `work` in
-`content/site.ts`.
+Crorepreneur's real work is in two sections of the home page, and a page for
+each case study. Copy is under `proof` and `cases` in `content/site.ts`.
 
 **Track record** (`components/sections/Proof.tsx`) has two parts:
 
@@ -65,25 +74,70 @@ Crorepreneur's real work is in two sections, with content under `work` in
   lavender panel beside the numbers. It is set in type only, with no Forbes
   logo or photo.
 
-**Selected work** (`components/sections/Work.tsx`) puts every case on one
-rail of cards, in this order:
-
-- **Featured:** the Netflix India launch of *Maa Behen*.
-- **Brand campaigns:** ITC Sunrise Masale (Chhath), Horlicks and Jharkhand
-  Tourism.
-- **Strategy and consulting:** the jewellery retailer in Jharkhand,
-  Microsoft Copilot and Ben Olive Mill.
-- **The page it started on:** @yourregularmom.
+**Brands and their case studies** (`components/sections/CaseStudies.tsx`)
+puts the nine case studies on one rail of cards: Sunrise Masale, Horlicks,
+Saraswaan Jewellers, Ben Olive Mill, Microsoft Copilot, Netflix India's
+*Maa Behen*, #IndiaFightsCorona, Jharkhand Tourism's State Level
+Influencers Meet, and @yourregularmom, the page where it started. Each card shows a still, the brand and year, the
+case's line, the challenge it came with and the result, and links to the
+case's own page. Nothing plays on the home page, so it stays light.
 
 The rail runs off the right edge of the screen. It swipes on touch and
 scrolls on a trackpad. The arrow buttons beside the heading
 (`components/ui/RailButtons.tsx`) move it one card at a time. Each button
 turns off at its end of the rail.
 
-Each case links to its original post. Every number comes from the post
-itself, as of October 2026, so update them in `content/site.ts` as they
-grow. Cover images are stills from each post or video, saved as WebP in
-`public/images/work/`.
+**Each case study's page** (`app/work/[id]/`, such as `/work/sunrise`) is
+written out at build time, one per case in `cases.items`, by
+`components/work/CasePage.tsx`:
+
+- **The video** (`CasePlayer.tsx`) across the full width, in a player of
+  our own, made to feel like watching a film: a slim violet progress bar
+  with the time left, play, ten seconds back and forward, sound (with a
+  volume slider on computers), the title, and full screen. The controls
+  fade while it plays and come back with a move of the mouse or a tap.
+  There is no download, picture-in-picture or speed menu, and no
+  right-click menu on the video. The picture fills the width: a film on a
+  laptop is trimmed a little at the top and bottom, and so is a Reel on a
+  phone held upright (never more than about a sixth). On very wide or very
+  short screens, and in full screen, the whole picture shows, on a soft
+  wash of its own colours. On an iPhone, which can put only a bare video
+  full screen (in Apple's own player, with its speed menu), full screen
+  fills the screen within the page instead, with these controls.
+  - **Starting:** it starts by itself, silently, as browsers only let a
+    video start on its own without sound. **Sound on** (or a click on the
+    picture) plays it from the start with sound. It pauses when scrolled
+    out of view. With reduced motion or data saver on, it waits for a press
+    of play.
+  - **Reels:** with several, **Reels** at the bottom right opens a small
+    panel on the right to switch between them, and each rolls on to the
+    next when it ends.
+  - **Keys:** space or K plays and pauses, the arrows skip five seconds, M
+    turns the sound on and off, F goes full screen. A double click goes
+    full screen too.
+- **The facts:** client, year, industry, capabilities and the result.
+- **The story:** the challenge, the creative solution and the results, side
+  by side on laptops and one under another on phones, then the links to
+  where it ran (LinkedIn, Instagram, the press).
+- **The next case,** and the same close as the home page.
+
+**Videos** come in two copies, both H.264 with AAC sound and `+faststart`,
+so they start before they finish downloading:
+
+- **Full quality** (`public/videos/hd/`), which everyone gets: the best the
+  original offers (1080p from Instagram, 720p from LinkedIn), re-encoded
+  only where needed and kept under Cloudflare's 25 MB limit per file.
+- **Light** (`public/videos/`, 540 wide), for slow connections and data
+  saver.
+
+Each has a still (`poster`) shown until it plays, and its size (`width`,
+`height`) in `content/site.ts`. The originals stay linked. To add a case,
+add it to `cases.items`, its videos to `public/videos/hd/` and
+`public/videos/`, and its card still to `public/images/work/`; its page
+appears with the next build.
+
+Every number comes from the case or its post, as of October 2026, so
+update them in `content/site.ts` as they grow.
 
 ## The approach
 
@@ -95,7 +149,8 @@ Compound).
   column one step higher than the last, with a small graph standing on its
   step. The steps rise less on short or narrow screens (`--rise`), so all
   five fit on one.
-- **Phones and tablets:** the same list, simply stacked.
+- **Phones and tablets:** a row of cards, one move each, that swipes
+  sideways, so the section is one card tall instead of five.
 - **Cost:** the staircase is CSS (`.stairs` in `app/globals.css`) and the
   graphs are inline SVG, so the section needs no script and does no work
   while scrolling.
@@ -112,12 +167,13 @@ has these parts:
 - **Who we work with:** two cards, "Into India" and "Out of India", then the
   brands we have worked with.
 - **The founder:** Chabi Gupta, with her portrait.
-- **The tech behind Crorepreneur:** a slim band under her section, on
-  Shubham Kumar Agrawal, without a photo.
+- **The tech behind Crorepreneur:** a band under her section on Shubham
+  Kumar Agrawal, with his portrait (`public/images/team/shubham.webp`),
+  smaller than hers.
 - **What we believe**, then a way to start a campaign.
 
 Its bar keeps a **Back to home** button in view, and the home page links to
-it from the navigation, the footer and the founder section. Every page
+it from the navigation and the founder section. Every page
 change starts at the top of the new page (`components/ui/ScrollReset.tsx`).
 
 Chabi's portrait is the same transparent cutout as on the home page
@@ -136,10 +192,24 @@ the bar, so it gets the whole screen.
 - **Sizing:** type and spacing inside are sized against the screen's height
   (`svh`) as well as its width, inside `clamp()`. They shrink on short
   screens and stop growing on tall ones.
-- **Checked sizes:** 1024 x 768, 1180 x 820, 1280 x 720, 1280 x 800,
-  1366 x 680, 1440 x 800, 1536 x 864 and 1920 x 950.
+- **Tall screens** (an iPad Pro or a monitor held upright): a section is no
+  taller than a landscape screen of the same width would be, so it stays
+  compact instead of spreading out.
+- **Big screens** (QHD, 4K, large projectors): past 1920 px wide, the root
+  font size grows with the screen, and since everything is sized in rem the
+  whole design scales with it. An ultrawide grows by its height, not its
+  width. Nothing changes up to 1920 px.
 - **Phones and tablets:** sections are as tall as their content and scroll
-  as usual.
+  as usual, kept short: tighter spacing, swipe rows instead of long stacks
+  (the five moves, the beliefs on the About page, the work), a case's story
+  in three tabs, and a few lines that repeat what is said elsewhere left to
+  wider screens. On short landscape phones the cover's headline is limited
+  by the screen's height too.
+- **Checked sizes:** 1024 x 768, 1180 x 820, 1280 x 720, 1280 x 800,
+  1366 x 680, 1440 x 800, 1536 x 864, 1920 x 950 and 1080, 2560 x 1080 and
+  1440, 3440 x 1440, 3840 x 2160, and 1024 x 1366. Phones and tablets from
+  280 px (a folded Galaxy Fold) up were checked for sideways scrolling and
+  for text cut off at the edges.
 
 When you add copy to a section, check that it still fits on a short laptop
 screen, such as 1366 x 680.
@@ -149,13 +219,32 @@ screen, such as 1366 x 680.
 `components/motion/ScrollStory.tsx` does everything that follows the
 scroll: smooth, weighted scrolling on mouse and trackpad (Lenis), the cover
 sinking into the dark as it scrolls away, and the manifesto lighting up
-word by word. Blocks ease in as they enter the screen (`Reveal`). A block
-that is scrolled past too fast to be seen, or jumped over from the
-navigation, is shown anyway. Figures count up once (`CountUp`).
+word by word. GSAP and Lenis are loaded on their own once the browser is
+idle after the first paint, so they never hold up the cover. Blocks ease in
+as they enter the screen (`Reveal`). A block that is scrolled past too fast
+to be seen, or jumped over from the navigation, is shown anyway. Figures
+count up once (`CountUp`), and the buttons lean toward the cursor
+(`Magnetic`); both, and the phone menu's fade, are a few lines of script and
+CSS, with no animation library.
 
 There is no WebGL on the page, which keeps it light and fast on phones.
 Visitors who prefer reduced motion get the page still, with no scroll
 effects.
+
+## Speed
+
+The first screen is what decides how fast the site feels, so:
+
+- **The headline** is there in full from the first paint, then starts its
+  typing loop.
+- **The cover portrait** is fetched as early as the page allows, at the size
+  the screen needs: phones get a 720 or 1080 px copy instead of the full
+  1323 px one (`founder.image.smaller` in `content/site.ts`).
+- **Scripts** that only matter once someone scrolls (GSAP, Lenis) load after
+  the first paint, and the spam check's script only when the form opens.
+
+On a mid-range phone on slow 4G, the cover appears in about 2 seconds. When
+you add something to the first screen, keep it light.
 
 ## The enquiry form
 
@@ -234,6 +323,9 @@ To use a different photo:
 - Export it as a transparent WebP or PNG cut out from the background, head
   and shoulders.
 - Save it over `public/images/founder.webp` (or change `founder.image.src`).
+- Save 720 and 1080 px wide copies as `founder-720.webp` and
+  `founder-1080.webp` beside it, for phones (WebP, quality 80), and update
+  `founder.image.width` if the full size changes.
 - Update `founder.image.aspect` to its width divided by its height.
 - `founder.image.avatar` sets the crop of the small round avatar, and
   `about.founder.image` sets how it sits in the About page's frame.
@@ -270,23 +362,28 @@ How they were built:
 ```
 app/                  Layout, page, design tokens (globals.css), fonts
 app/about/            The About page
+app/work/[id]/        A page for each case study
 components/
-  about/              About page sections, its bar and back button
-  layout/             Navbar, MobileMenu, Footer
-  sections/           Hero, Manifesto, Proof, Work, Capabilities,
+  about/              About page sections and the back button
+  layout/             Navbar, MobileMenu, Footer, PageHeader (the bar on
+                      every page but the home page)
+  sections/           Hero, Manifesto, Proof, CaseStudies, Capabilities,
                       Process, Founder, FinalCTA
-  motion/             ScrollStory: GSAP, ScrollTrigger and Lenis
+  work/               The case study cards and pages, and their video
+  motion/             ScrollStory: GSAP, ScrollTrigger and Lenis, loaded late
   ui/                 Button, EnquiryDialog, TypeLines, Logo, Reveal,
                       RailButtons, Magnetic, CountUp, CopyEmail, Cursor,
                       icons
 content/site.ts       All copy, the case studies and the enquiry emails
 lib/                  Enquiry delivery, smooth scrolling, helpers
-worker/               The enquiry endpoint and its two emails
-wrangler.jsonc        Cloudflare: the site's files, the endpoint, the
-                      spam check's public key
+worker/               The enquiry endpoint and its two emails, and the
+                      videos sent in pieces for Safari
+wrangler.jsonc        Cloudflare: the site's files, what runs the Worker,
+                      the spam check's public key
 public/brand/         The logo files (email-logo.png for the emails)
-public/images/        founder.webp (the portrait on the site)
-  work/               Cover images for the case studies
+public/images/        founder.webp, and team/shubham.webp (the portraits)
+  work/               Card stills for the case studies
+public/videos/        The case studies' videos and their stills
 design/               founder-studio.jpg (the source photo, not published)
 ```
 

@@ -29,7 +29,8 @@ export function Button({ href, children, size = "md", enquiry, className }: Butt
           small
             ? "h-10 gap-2.5 pl-4 pr-1.5 text-sm"
             : large
-              ? "h-16 gap-5 pl-8 pr-2.5 text-[1.1875rem] sm:h-[4.5rem] sm:pl-9 sm:text-[1.3125rem]"
+              ? // On the narrowest phones (a folded Galaxy Fold, the first iPhone SE) it takes the regular size, to fit.
+                "h-16 gap-5 pl-8 pr-2.5 text-[1.1875rem] max-[359px]:h-13 max-[359px]:gap-3.5 max-[359px]:pl-6 max-[359px]:text-[0.9375rem] sm:h-[4.5rem] sm:pl-9 sm:text-[1.3125rem]"
               : "h-13 gap-3.5 pl-6 pr-2 text-[0.9375rem]",
           className,
         )}
@@ -39,7 +40,7 @@ export function Button({ href, children, size = "md", enquiry, className }: Butt
           aria-hidden="true"
           className={cn(
             "grid place-items-center rounded-full bg-accent text-on-accent",
-            small ? "size-7" : large ? "size-11 sm:size-[3.25rem]" : "size-9",
+            small ? "size-7" : large ? "size-11 max-[359px]:size-9 sm:size-[3.25rem]" : "size-9",
           )}
         >
           <span className="arrow-swap">

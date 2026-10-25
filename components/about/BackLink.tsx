@@ -3,17 +3,19 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 
 type BackLinkProps = {
+  /** Where it leads; the home page unless said otherwise. */
+  href?: string;
   label: string;
   /** A shorter label for narrow screens. */
   short?: string;
   className?: string;
 };
 
-/** Back to the home page: a quiet pill with an arrow that leans the way it goes. */
-export function BackLink({ label, short, className }: BackLinkProps) {
+/** Back (to the home page, unless told where): a quiet pill with an arrow that leans the way it goes. */
+export function BackLink({ href = "/", label, short, className }: BackLinkProps) {
   return (
     <Link
-      href="/"
+      href={href}
       className={cn(
         "group inline-flex h-10 items-center gap-2 rounded-full border border-line-strong pl-3 pr-4 text-sm font-medium text-fg",
         "transition-colors duration-300 hover:border-fg",

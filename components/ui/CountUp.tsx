@@ -1,41 +1,58 @@
 "use client";
 
-import { animate, useInView } from "motion/react";
 import { useEffect, useRef } from "react";
 import type { Metric } from "@/content/site";
+
+const DURATION = 1300;
 
 function format(value: number, decimals: number) {
   return value.toFixed(decimals);
 }
 
+/** Fast at first, settling gently, like the site's ease-out-expo. */
+function easeOut(t: number) {
+  return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
+
 /**
- * Counts a figure up from zero the first time it is seen. The final value is
- * what gets rendered on the server, so the number is right without script and
- * for visitors who prefer reduced motion.
+ * Counts a figure up from zero the first time it is mostly on screen. The
+ * final value is what gets rendered on the server, so the number is right
+ * without script and for visitors who prefer reduced motion. A plain
+ * IntersectionObserver and one animation frame per update, nothing else.
  */
 export function CountUp({ metric, className }: { metric: Metric; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const numberRef = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.6 });
   const decimals = metric.decimals ?? 0;
 
   useEffect(() => {
+    const host = ref.current;
     const node = numberRef.current;
-    if (!inView || !node) return;
+    if (!host || !node || typeof IntersectionObserver === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const controls = animate(0, metric.value, {
-      duration: 1.3,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (latest) => {
-        node.textContent = format(latest, decimals);
+    let frame = 0;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        const start = performance.now();
+        const step = (now: number) => {
+          const t = Math.min(1, (now - start) / DURATION);
+          node.textContent = format(metric.value * easeOut(t), decimals);
+          if (t < 1) frame = requestAnimationFrame(step);
+        };
+        frame = requestAnimationFrame(step);
       },
-    });
+      { threshold: 0.6 },
+    );
+    observer.observe(host);
     return () => {
-      controls.stop();
+      observer.disconnect();
+      cancelAnimationFrame(frame);
       node.textContent = format(metric.value, decimals);
     };
-  }, [inView, metric.value, decimals]);
+  }, [metric.value, decimals]);
 
   return (
     <span ref={ref} className={className}>

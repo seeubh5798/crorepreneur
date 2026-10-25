@@ -2,13 +2,13 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ScrollStory } from "@/components/motion/ScrollStory";
 import { Capabilities } from "@/components/sections/Capabilities";
+import { CaseStudies } from "@/components/sections/CaseStudies";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { Founder } from "@/components/sections/Founder";
 import { Hero } from "@/components/sections/Hero";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { Process } from "@/components/sections/Process";
 import { Proof } from "@/components/sections/Proof";
-import { Work } from "@/components/sections/Work";
 import { EnquiryDialog } from "@/components/ui/EnquiryDialog";
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
         <Hero />
         <Manifesto />
         <Proof />
-        <Work />
+        <CaseStudies />
         <Capabilities />
         <Process />
         <Founder />
