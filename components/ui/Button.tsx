@@ -11,11 +11,13 @@ type ButtonProps = {
   size?: "md" | "sm" | "lg";
   /** Opens the "Start a Campaign" form (EnquiryDialog) instead of following the link. */
   enquiry?: boolean;
+  /** Opens another pop-up by name instead (such as "apply", ApplyDialog); the link stays for no script. */
+  opens?: string;
   className?: string;
 };
 
 /** The primary call to action: a solid matte pill with an accent arrow. */
-export function Button({ href, children, size = "md", enquiry, className }: ButtonProps) {
+export function Button({ href, children, size = "md", enquiry, opens, className }: ButtonProps) {
   const small = size === "sm";
   const large = size === "lg";
   return (
@@ -23,6 +25,7 @@ export function Button({ href, children, size = "md", enquiry, className }: Butt
       <a
         href={href}
         data-enquiry={enquiry ? "" : undefined}
+        data-opens={opens}
         className={cn(
           "matte-pill arrow-host group inline-flex items-center rounded-full bg-fg font-medium text-bg",
           "transition-[box-shadow,background-color] duration-500 ease-out-expo",

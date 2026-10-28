@@ -1991,6 +1991,11 @@ html.lenis body {
   animation: enquiry-in 0.5s var(--ease-out-expo);
 }
 
+/* A smaller pop-up of the same kind, such as how to apply for a role. */
+.enquiry.enquiry-small {
+  width: min(32rem, calc(100vw - 2rem));
+}
+
 .enquiry::backdrop {
   background: color-mix(in oklab, var(--bg) 76%, transparent);
   animation: fade-in 0.3s var(--ease-soft);

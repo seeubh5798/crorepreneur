@@ -363,6 +363,7 @@ How they were built:
 app/                  Layout, page, design tokens (globals.css), fonts
 app/about/            The About page
 app/work/[id]/        A page for each case study
+app/careers/          Careers: the open roles (linked from the footer)
 components/
   about/              About page sections and the back button
   layout/             Navbar, MobileMenu, Footer, PageHeader (the bar on

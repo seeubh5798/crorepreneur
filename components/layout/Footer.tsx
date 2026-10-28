@@ -1,5 +1,6 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
-import { site } from "@/content/site";
+import { careers, site } from "@/content/site";
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import { LinkedInIcon } from "@/components/ui/LinkedInIcon";
 import { LogoFull } from "@/components/ui/Logo";
@@ -14,9 +15,10 @@ const ICONS: Partial<Record<(typeof site.socials)[number]["network"], ReactNode>
 const COPYRIGHT_YEAR = 2026;
 
 /**
- * The logo, the copyright, and buttons to follow the company on its social
- * accounts. The section links live in the header only. `onHome` is false on
- * other pages, where the logo leads back to the home page.
+ * The logo, the copyright with a small link to careers, and buttons to
+ * follow the company on its social accounts. The section links live in the
+ * header only. `onHome` is false on other pages, where the logo leads back
+ * to the home page.
  */
 export function Footer({ onHome = true }: { onHome?: boolean }) {
   const socials = site.socials.filter((social) => social.href);
@@ -33,9 +35,17 @@ export function Footer({ onHome = true }: { onHome?: boolean }) {
           >
             <LogoFull />
           </a>
-          <p>
-            © {COPYRIGHT_YEAR} {site.name}. All rights reserved.
-          </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+            <p>
+              © {COPYRIGHT_YEAR} {site.name}. All rights reserved.
+            </p>
+            <Link href="/careers" className="inline-flex min-h-11 items-center gap-2.5 text-fg">
+              <span className="link-underline pb-0.5 font-medium">{careers.link}</span>
+              <span className="rounded-full bg-accent-soft px-2.5 py-1 text-[0.75rem] font-medium leading-none text-accent-text">
+                {careers.hiring}
+              </span>
+            </Link>
+          </div>
         </div>
 
         {socials.length > 0 && (

@@ -1198,3 +1198,63 @@ export const about = {
   ctaBody:
     "Tell us about the brand and the markets you want to reach, in India or anywhere else. You will hear back within 24 hours.",
 } as const;
+
+/**
+ * The careers page (app/careers), linked from the footer. One role is open;
+ * `posted` is its date in Google's job listings (the page's structured data).
+ */
+export const careers = {
+  title: "Careers",
+  description:
+    "Join Crorepreneur in Ranchi. We’re hiring a Marketing Intern to work with our CEO and CTO on creator campaigns for brands across India and beyond.",
+  /** The footer link, and the small tag beside it. */
+  link: "Careers",
+  hiring: "We’re hiring",
+  headline: ["Build the buzz", "with us."],
+  intro:
+    "Crorepreneur is a small team making creator campaigns that get cities talking, for brands like Netflix India, Sunrise Masale and Horlicks. Our office is in Ranchi, and we’re growing.",
+  rolesLabel: "Open roles",
+  role: {
+    title: "Marketing Intern",
+    posted: "2026-10-28",
+    city: "Ranchi",
+    region: "Jharkhand",
+    tags: ["Ranchi office", "Internship", "Option to go full-time"],
+    team: "You’ll work closely with our CEO, Chabi Gupta, and our CTO, Shubham Kumar Agrawal, on campaigns for real brands.",
+    doesLabel: "What you’ll do",
+    does: [
+      "Find creators city by city, by language, dialect and audience, and keep our roster fresh",
+      "Turn a brand’s brief into a campaign plan: who to reach, what their city talks about, and the idea",
+      "Write scripts, hooks and captions with our creators, in Hindi and English",
+      "Help run shoots and rollouts: creators, brands, schedules and locations",
+      "Track what every campaign does, from reach and shares to store visits and sales, and report it plainly",
+      "Grow Crorepreneur’s own name on Instagram, LinkedIn and our website, with the CTO",
+      "Research the brands we should work with next, and help build the pitches",
+    ],
+    looksForLabel: "Who you are",
+    looksFor: [
+      "You live on Instagram and YouTube, and can say why one reel works and another doesn’t",
+      "You write well in Hindi and English; another Indian language is a plus",
+      "You’re organised, you follow up, and a spreadsheet doesn’t scare you",
+      "You can work from our office in Ranchi",
+    ],
+    goodLabel: "Good to know",
+    good: [
+      "When the work takes you out of town, for a shoot, a launch or an event, we cover the travel expenses.",
+      "If the results are strong, the internship can turn into a full-time role.",
+    ],
+    /** The button, and the pop-up it opens (ApplyDialog). */
+    apply: {
+      label: "Apply for this role",
+      lead: "Sounds like you?",
+      title: "Apply for this role",
+      note: "Send us your CV, a few lines on why you, and links to anything you’ve made: a page, a reel, a post.",
+      write: "Write to",
+      button: "Write to us",
+      close: "Close",
+      /** Filled in for them when "Write to us" opens their email app. */
+      subject: "Application: Marketing Intern, Ranchi",
+      body: "Hi Chabi and Shubham,\n\nI’d like to apply for the Marketing Intern role in Ranchi.\n\nA little about me:\n\nLinks to things I’ve made:\n\n(CV attached)",
+    },
+  },
+} as const;
